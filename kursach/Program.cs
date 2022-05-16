@@ -36,7 +36,6 @@ namespace kursach
     {
         public static void Main(string[] args)
         {
-            int a;
             IntPtr hwd = User32.GetForegroundWindow(); // достает хэндл активного окна
             Rect screen;
             screen.Left = 100;
