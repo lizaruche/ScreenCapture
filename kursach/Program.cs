@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing.Imaging;
 using System.Drawing;
+using System.Windows.Forms;
 using System.Threading;
 
 // Работает осталось понять че тут происходит https://www.codeproject.com/Articles/3024/Capturing-the-Screen-Image-in-C
@@ -38,14 +39,24 @@ namespace kursach
         public static void Main(string[] args)
         {
             IntPtr hwd = User32.GetForegroundWindow(); // достает хэндл активного окна
-            Rect screen;
-            screen.Left = 100;
-            screen.Top = 200;
-            screen.Right = 1000;
-            screen.Bottom = 900;
-            Bitmap bitmap = Shot.GetScreenShot(screen); // Делает скриншот области экрана
-                            //Capture.GetWindowShot(hwd);  // Делает скриншот окна
-            bitmap.Save(@"C:\данные\вшэ\ПРОГА C#\kursach\screenshot_01.jpg", ImageFormat.Jpeg);
+            Rect bounds = default;
+            User32.GetWindowRect(hwd, ref bounds);
+            Size b = new Size(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top);
+
+            Form f = new Form();
+
+            var timer = new System.Windows.Forms.Timer() { Interval = 40 };
+            timer.Tick += (s, e) =>
+            {
+                User32.GetWindowRect(hwd, ref bounds);
+                b = new Size(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top);
+                Graphics g = f.CreateGraphics();
+                g.CopyFromScreen(bounds.Left, bounds.Top, 0, 0, b);
+                g.Dispose();
+            };
+            timer.Start();
+
+            Application.Run(f);
         }
     }
 }
