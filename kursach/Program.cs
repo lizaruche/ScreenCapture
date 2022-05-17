@@ -38,21 +38,25 @@ namespace kursach
     {
         public static void Main(string[] args)
         {
-            IntPtr hwd = User32.GetForegroundWindow(); // достает хэндл активного окна
+            Thread.Sleep(2000);
+            IntPtr hwd = User32.GetForegroundWindow(); // достает хэндл активного окна? 
+                                                       // TODO присрать на OnMouseDown event
             Rect bounds = default;
-            User32.GetWindowRect(hwd, ref bounds);
-            Size b = new Size(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top);
+            User32.GetWindowRect(hwd, ref bounds); // достает размеры окна
+            Size b = new Size(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top); // Размер окна
 
             Form f = new Form();
 
             var timer = new System.Windows.Forms.Timer() { Interval = 40 };
             timer.Tick += (s, e) =>
             {
-                User32.GetWindowRect(hwd, ref bounds);
-                b = new Size(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top);
-                Graphics g = f.CreateGraphics();
-                g.CopyFromScreen(bounds.Left, bounds.Top, 0, 0, b);
-                g.Dispose();
+                User32.GetWindowRect(hwd, ref bounds); // трэчит размер окна
+                b = new Size(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top); // трэчит размеры окна
+                f.MinimumSize = b; // фиксирует размеры формы
+                f.MaximumSize = b; // фиксирует размеры формы
+                Graphics g = f.CreateGraphics(); // создаем объект графикс на основе формы
+                g.CopyFromScreen(bounds.Left, bounds.Top, 0, 0, b); // копируем экран
+                g.Dispose(); // удаляем объект графикс
             };
             timer.Start();
 
