@@ -41,22 +41,26 @@ namespace kursach
         public static Rectangle SelectedRectangle;
         public static void SelectedRect(IntPtr hwd)
         {
-            Rect bounds = default;
-            User32.GetWindowRect(hwd, ref bounds); // достает размеры окна
-            Size b = new Size(Form1.SelectedRectangle.Width, Form1.SelectedRectangle.Height); // Размер окна
-            Point r = new Point(SelectedRectangle.X - bounds.Left, SelectedRectangle.Y - bounds.Top);
-            Point botLeft = new Point(bounds.Right - SelectedRectangle.Right, bounds.Bottom - SelectedRectangle.Bottom);
+            Rect boundsOfWindow = default;
+            User32.GetWindowRect(hwd, ref boundsOfWindow); // достает размеры окна
+
+            Size b = new Size(SelectedRectangle.Width, SelectedRectangle.Height); // Размер окна
+
+            Point movTrackDif = new Point(SelectedRectangle.X - boundsOfWindow.Left, SelectedRectangle.Y - boundsOfWindow.Top); // разница левого верхнего угла 
+
+            Point botLeft = new Point(boundsOfWindow.Right - SelectedRectangle.Right, boundsOfWindow.Bottom - SelectedRectangle.Bottom);
+
             Form f = new Form();
 
             var timer = new System.Windows.Forms.Timer() { Interval = 40 };
             timer.Tick += (s, e) =>
             {
-                User32.GetWindowRect(hwd, ref bounds); // трэчит размер окна
+                User32.GetWindowRect(hwd, ref boundsOfWindow); // трэчит размер окна
                 b = new Size(SelectedRectangle.Width, SelectedRectangle.Height); // трэчит размеры окна
                 f.MinimumSize = b; // фиксирует размеры формы
                 f.MaximumSize = b; // фиксирует размеры формы
                 Graphics g = f.CreateGraphics(); // создаем объект графикс на основе формы
-                g.CopyFromScreen(bounds.Left + r.X, bounds.Top + r.Y, 0, 0, b); // копируем экран bounds.Left + r.X bounds.Top + r.Y
+                g.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b); // копируем экран bounds.Left + r.X bounds.Top + r.Y
                 g.Dispose(); // удаляем объект графикс
             };
             timer.Start();
@@ -69,15 +73,15 @@ namespace kursach
         [STAThread]
         static void Main()
         {
-            //Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            //Application.SetHighDpiMode(HighDpiMode.SystemAware); // хз и без этой штуки работает 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             Thread.Sleep(2000);
-            IntPtr hwd = User32.GetForegroundWindow();
+            IntPtr hwd = User32.GetForegroundWindow(); // TODO как-то это оформить в форму
+                                                       // достает хэндл активного окна 
 
-            Form1 d = new Form1(hwd);
-            Application.Run(d);
+            Application.Run(new Form1(hwd));
 
             CupruteOne.SelectedRect(hwd);
         }

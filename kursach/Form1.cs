@@ -12,12 +12,9 @@ namespace kursach
 {
     public partial class Form1 : Form
     {
-        public IntPtr Hwd;
-        public Form1()
-        {
-            InitializeComponent();
-        }
-        public Form1(IntPtr hwd)
+        public static Rectangle SelectedRectangle; // выбранная пользователем область 
+        public IntPtr Hwd; // выбранное пользователем окно
+        public Form1(IntPtr hwd) // форма для выбора области
         {
             Hwd = hwd;
             InitializeComponent();
@@ -31,7 +28,7 @@ namespace kursach
             WindowState = FormWindowState.Maximized;
             BackgroundImage = Shoot();
         }
-        private Bitmap Shoot()
+        private Bitmap Shoot() // для бэкграунда формы
         {
             Rect bounds = default;
             User32.GetWindowRect(Hwd, ref bounds);
@@ -40,8 +37,6 @@ namespace kursach
                 gr.CopyFromScreen(bounds.Left, bounds.Top, bounds.Left, bounds.Top, new Size(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top));
             return bmp;
         }
-
-        public static Rectangle SelectedRectangle;
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -55,12 +50,7 @@ namespace kursach
                 CupruteOne.SelectedRectangle = SelectedRectangle;
                 SelectedRectangle.Size = Size.Empty;
                 Invalidate();
-                //Application.Exit();
-                //BackgroundImage = null;
-                //CupruteOne.SelectedRect(Hwd);
             }
-            //SelectedRectangle.Size = Size.Empty;
-            //CupruteOne.SelectedRect(Hwd); // метод для передачи изображения
             this.Close();
         }
 
@@ -75,7 +65,7 @@ namespace kursach
                     Invalidate();
                 }
         }
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e) // закрашивает область
         {
             var r = new Region(ClientRectangle);
             r.Exclude(SelectedRectangle);
