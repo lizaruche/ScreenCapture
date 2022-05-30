@@ -1,8 +1,10 @@
 ﻿using System;
-using System.Drawing.Imaging;
-using System.Drawing;
-using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 // Работает осталось понять че тут происходит https://www.codeproject.com/Articles/3024/Capturing-the-Screen-Image-in-C
 #region Библиотеки DLL
@@ -34,33 +36,50 @@ using System.Threading;
 
 namespace kursach
 {
-    class MainClass
+    public class CupruteOne
     {
-        public static void Main(string[] args)
+        public static Rectangle SelectedRectangle;
+        public static void SelectedRect(IntPtr hwd)
         {
-            Thread.Sleep(2000);
-            IntPtr hwd = User32.GetForegroundWindow(); // достает хэндл активного окна? 
-                                                       // TODO присрать на OnMouseDown event
             Rect bounds = default;
             User32.GetWindowRect(hwd, ref bounds); // достает размеры окна
-            Size b = new Size(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top); // Размер окна
-
+            Size b = new Size(Form1.SelectedRectangle.Width, Form1.SelectedRectangle.Height); // Размер окна
+            Point r = new Point(SelectedRectangle.X - bounds.Left, SelectedRectangle.Y - bounds.Top);
+            Point botLeft = new Point(bounds.Right - SelectedRectangle.Right, bounds.Bottom - SelectedRectangle.Bottom);
             Form f = new Form();
 
             var timer = new System.Windows.Forms.Timer() { Interval = 40 };
             timer.Tick += (s, e) =>
             {
                 User32.GetWindowRect(hwd, ref bounds); // трэчит размер окна
-                b = new Size(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top); // трэчит размеры окна
+                b = new Size(SelectedRectangle.Width, SelectedRectangle.Height); // трэчит размеры окна
                 f.MinimumSize = b; // фиксирует размеры формы
                 f.MaximumSize = b; // фиксирует размеры формы
                 Graphics g = f.CreateGraphics(); // создаем объект графикс на основе формы
-                g.CopyFromScreen(bounds.Left, bounds.Top, 0, 0, b); // копируем экран
+                g.CopyFromScreen(bounds.Left + r.X, bounds.Top + r.Y, 0, 0, b); // копируем экран bounds.Left + r.X bounds.Top + r.Y
                 g.Dispose(); // удаляем объект графикс
             };
             timer.Start();
 
             Application.Run(f);
+        }
+    }
+    static class Program
+    {
+        [STAThread]
+        static void Main()
+        {
+            //Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            Thread.Sleep(2000);
+            IntPtr hwd = User32.GetForegroundWindow();
+
+            Form1 d = new Form1(hwd);
+            Application.Run(d);
+
+            CupruteOne.SelectedRect(hwd);
         }
     }
 }
