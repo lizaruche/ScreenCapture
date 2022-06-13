@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using RestSharp;
 using System.Threading;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 // Работает осталось понять че тут происходит https://www.codeproject.com/Articles/3024/Capturing-the-Screen-Image-in-C
@@ -59,13 +57,27 @@ namespace kursach
                 b = new Size(SelectedRectangle.Width, SelectedRectangle.Height); // трэчит размеры окна
                 f.MinimumSize = b; // фиксирует размеры формы
                 f.MaximumSize = b; // фиксирует размеры формы
-                Graphics g = f.CreateGraphics(); // создаем объект графикс на основе формы
+                Graphics g = f.CreateGraphics(); // создаем объект графикс для формы
+                Bitmap bitmap = new Bitmap(SelectedRectangle.Width, SelectedRectangle.Height);
+                Graphics g1 = Graphics.FromImage(bitmap);
                 g.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b); // копируем экран bounds.Left + r.X bounds.Top + r.Y
+                g1.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b);
+                SendToServ(bitmap);
                 g.Dispose(); // удаляем объект графикс
+                g1.Dispose();
             };
             timer.Start();
 
             Application.Run(f);
+        }
+        static void SendToServ(Bitmap img)
+        {
+            img.Save(@"C:\Users\Arsenii\source\repos\ScreenCapture\kursach\Buffer\BufferIMG.png", System.Drawing.Imaging.ImageFormat.Png);
+            var client = new RestClient("http://127.0.0.1:5000/file-upload");
+            var request = new RestRequest("http://127.0.0.1:5000/file-upload", Method.Post);
+            request.AddFile("file", @"C:\Users\Arsenii\source\repos\ScreenCapture\kursach\Buffer\BufferIMG.png");
+            RestResponse response = client.Execute(request);
+            Console.WriteLine(response.Content);
         }
     }
     static class Program
