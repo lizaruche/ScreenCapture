@@ -1,4 +1,5 @@
 ﻿using System;
+using OpenCvSharp;
 using RestSharp;
 using System.Threading;
 using System.Drawing;
@@ -42,11 +43,11 @@ namespace kursach
             Rect boundsOfWindow = default;
             User32.GetWindowRect(hwd, ref boundsOfWindow); // достает размеры окна
 
-            Size b = new Size(SelectedRectangle.Width, SelectedRectangle.Height); // Размер окна
+            System.Drawing.Size b = new System.Drawing.Size(SelectedRectangle.Width, SelectedRectangle.Height); // Размер окна
 
-            Point movTrackDif = new Point(SelectedRectangle.X - boundsOfWindow.Left, SelectedRectangle.Y - boundsOfWindow.Top); // разница левого верхнего угла 
+            System.Drawing.Point movTrackDif = new System.Drawing.Point(SelectedRectangle.X - boundsOfWindow.Left, SelectedRectangle.Y - boundsOfWindow.Top); // разница левого верхнего угла 
 
-            Point botLeft = new Point(boundsOfWindow.Right - SelectedRectangle.Right, boundsOfWindow.Bottom - SelectedRectangle.Bottom);
+            System.Drawing.Point botLeft = new System.Drawing.Point(boundsOfWindow.Right - SelectedRectangle.Right, boundsOfWindow.Bottom - SelectedRectangle.Bottom);
 
             Form f = new Form();
 
@@ -54,16 +55,16 @@ namespace kursach
             timer.Tick += (s, e) =>
             {
                 User32.GetWindowRect(hwd, ref boundsOfWindow); // трэчит размер окна
-                b = new Size(SelectedRectangle.Width, SelectedRectangle.Height); // трэчит размеры окна
-                f.MinimumSize = b; // фиксирует размеры формы
-                f.MaximumSize = b; // фиксирует размеры формы
-                Graphics g = f.CreateGraphics(); // создаем объект графикс для формы
+                b = new System.Drawing.Size(SelectedRectangle.Width, SelectedRectangle.Height); // трэчит размеры окна
+                                                                                 //f.MinimumSize = b; // фиксирует размеры формы
+                                                                                 //f.MaximumSize = b; // фиксирует размеры формы
+                                                                                 //Graphics g = f.CreateGraphics(); // создаем объект графикс для формы
                 Bitmap bitmap = new Bitmap(SelectedRectangle.Width, SelectedRectangle.Height);
                 Graphics g1 = Graphics.FromImage(bitmap);
-                g.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b); // копируем экран bounds.Left + r.X bounds.Top + r.Y
+                //g.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b); // копируем экран bounds.Left + r.X bounds.Top + r.Y
                 g1.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b);
                 SendToServ(bitmap);
-                g.Dispose(); // удаляем объект графикс
+                //g.Dispose(); // удаляем объект графикс
                 g1.Dispose();
             };
             timer.Start();
@@ -72,10 +73,17 @@ namespace kursach
         }
         static void SendToServ(Bitmap img)
         {
-            img.Save(@"C:\Users\Arsenii\source\repos\ScreenCapture\kursach\Buffer\BufferIMG.png", System.Drawing.Imaging.ImageFormat.Png);
-            var client = new RestClient("http://127.0.0.1:5000/file-upload");
-            var request = new RestRequest("http://127.0.0.1:5000/file-upload", Method.Post);
-            request.AddFile("file", @"C:\Users\Arsenii\source\repos\ScreenCapture\kursach\Buffer\BufferIMG.png");
+            Bitmap bImage = img;  // Your Bitmap Image
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            bImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+            byte[] byteImage = ms.ToArray();
+            var SigBase64 = Convert.ToBase64String(byteImage); // Get Base64
+
+            var client = new RestClient("http://127.0.0.1:5000/base64_img");
+            var request = new RestRequest("http://127.0.0.1:5000/base64_img", Method.Post);
+            request.AddHeader("Content-Type", "application/json");
+            var body = @"{""base64_img"": " + $@"""{SigBase64}""," + @"""format"": ""jpeg""}";
+            request.AddParameter("application/json", body, ParameterType.RequestBody);
             RestResponse response = client.Execute(request);
             Console.WriteLine(response.Content);
         }
