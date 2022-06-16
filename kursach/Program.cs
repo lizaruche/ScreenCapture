@@ -1,6 +1,6 @@
 ﻿using System;
-using OpenCvSharp;
-using RestSharp;
+using System.IO;
+using System.Net;
 using System.Threading;
 using System.Drawing;
 using System.Windows.Forms;
@@ -77,15 +77,27 @@ namespace kursach
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
             bImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
             byte[] byteImage = ms.ToArray();
-            var SigBase64 = Convert.ToBase64String(byteImage); // Get Base64
+            var imgBase64 = Convert.ToBase64String(byteImage); // Get Base64
 
-            var client = new RestClient("http://127.0.0.1:5000/base64_img");
-            var request = new RestRequest("http://127.0.0.1:5000/base64_img", Method.Post);
-            request.AddHeader("Content-Type", "application/json");
-            var body = @"{""base64_img"": " + $@"""{SigBase64}""," + @"""format"": ""jpeg""}";
-            request.AddParameter("application/json", body, ParameterType.RequestBody);
-            RestResponse response = client.Execute(request);
-            Console.WriteLine(response.Content);
+            WebRequest request = WebRequest.Create("http://127.0.0.1:5000/base64_img");
+            request.ContentType = "application/json";
+            request.Method = "POST";
+
+            using (StreamWriter streamWriter = new StreamWriter(request.GetRequestStream()))
+            {
+                string json = "{\"base64_img\":" + $"\"{imgBase64}\"," +
+                              "\"format\":\"jpeg\"}";
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+
+            WebResponse httpResponse = request.GetResponse();
+            using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+            }
         }
     }
     static class Program
