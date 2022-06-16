@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using System.Threading;
-using System.Drawing;
 using System.Windows.Forms;
 
 // Работает осталось понять че тут происходит https://www.codeproject.com/Articles/3024/Capturing-the-Screen-Image-in-C
@@ -35,77 +32,12 @@ using System.Windows.Forms;
 
 namespace kursach
 {
-    public class CupruteOne
-    {
-        public static Rectangle SelectedRectangle;
-        public static void SelectedRect(IntPtr hwd)
-        {
-            Rect boundsOfWindow = default;
-            User32.GetWindowRect(hwd, ref boundsOfWindow); // достает размеры окна
-
-            System.Drawing.Size b = new System.Drawing.Size(SelectedRectangle.Width, SelectedRectangle.Height); // Размер окна
-
-            System.Drawing.Point movTrackDif = new System.Drawing.Point(SelectedRectangle.X - boundsOfWindow.Left, SelectedRectangle.Y - boundsOfWindow.Top); // разница левого верхнего угла 
-
-            System.Drawing.Point botLeft = new System.Drawing.Point(boundsOfWindow.Right - SelectedRectangle.Right, boundsOfWindow.Bottom - SelectedRectangle.Bottom);
-
-            Form f = new Form();
-
-            var timer = new System.Windows.Forms.Timer() { Interval = 40 };
-            timer.Tick += (s, e) =>
-            {
-                User32.GetWindowRect(hwd, ref boundsOfWindow); // трэчит размер окна
-                b = new System.Drawing.Size(SelectedRectangle.Width, SelectedRectangle.Height); // трэчит размеры окна
-                                                                                 //f.MinimumSize = b; // фиксирует размеры формы
-                                                                                 //f.MaximumSize = b; // фиксирует размеры формы
-                                                                                 //Graphics g = f.CreateGraphics(); // создаем объект графикс для формы
-                Bitmap bitmap = new Bitmap(SelectedRectangle.Width, SelectedRectangle.Height);
-                Graphics g1 = Graphics.FromImage(bitmap);
-                //g.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b); // копируем экран bounds.Left + r.X bounds.Top + r.Y
-                g1.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b);
-                SendToServ(bitmap);
-                //g.Dispose(); // удаляем объект графикс
-                g1.Dispose();
-            };
-            timer.Start();
-
-            Application.Run(f);
-        }
-        static void SendToServ(Bitmap img)
-        {
-            Bitmap bImage = img;  // Your Bitmap Image
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            bImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-            byte[] byteImage = ms.ToArray();
-            var imgBase64 = Convert.ToBase64String(byteImage); // Get Base64
-
-            WebRequest request = WebRequest.Create("http://127.0.0.1:5000/base64_img");
-            request.ContentType = "application/json";
-            request.Method = "POST";
-
-            using (StreamWriter streamWriter = new StreamWriter(request.GetRequestStream()))
-            {
-                string json = "{\"base64_img\":" + $"\"{imgBase64}\"," +
-                              "\"format\":\"jpeg\"}";
-
-                streamWriter.Write(json);
-                streamWriter.Flush();
-                streamWriter.Close();
-            }
-
-            WebResponse httpResponse = request.GetResponse();
-            using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
-            {
-                var result = streamReader.ReadToEnd();
-            }
-        }
-    }
+    
     static class Program
     {
         [STAThread]
         static void Main()
         {
-            //Application.SetHighDpiMode(HighDpiMode.SystemAware); // хз и без этой штуки работает 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
