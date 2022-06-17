@@ -18,16 +18,19 @@ namespace kursach
 
             Point movTrackDif = new Point(SelectedRectangle.X - boundsOfWindow.Left, SelectedRectangle.Y - boundsOfWindow.Top); // разница левого верхнего угла 
 
-            Point botLeft = new Point(boundsOfWindow.Right - SelectedRectangle.Right, boundsOfWindow.Bottom - SelectedRectangle.Bottom);
+            Point botRight = new Point(boundsOfWindow.Right - SelectedRectangle.Right, boundsOfWindow.Bottom - SelectedRectangle.Bottom);
+
 
 
             var timer = new Timer() { Interval = 40 }; // создаем объект Timer и устанавливаем интервал на 40 мс
             timer.Tick += (s, e) => // на тик таймера сохраняем изображение и вызываем метод для отправки его на сервер
             {
                 User32.GetWindowRect(hwd, ref boundsOfWindow); // трэчит размер окна
-                b = new Size(SelectedRectangle.Width, SelectedRectangle.Height); // трэчит размеры окна
+                int windowWidth = boundsOfWindow.Right - boundsOfWindow.Left;
+                int windowHeight = boundsOfWindow.Bottom - boundsOfWindow.Top;
+                b = new Size(windowWidth - botRight.X, windowHeight - botRight.Y); // трэчит размеры окна
 
-                Bitmap bitmap = new Bitmap(SelectedRectangle.Width, SelectedRectangle.Height); // формируем объект 
+                Bitmap bitmap = new Bitmap(b.Width, b.Height); // формируем объект 
                 Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
                 g1.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b); // копируем изображение с экрана
                 try
