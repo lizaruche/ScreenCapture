@@ -31,6 +31,20 @@ using System.Windows.Forms;
 // Про прямую трансляцию через Azure, не факт, что это то, что нужно https://docs.microsoft.com/ru-ru/azure/media-services/latest/stream-live-tutorial-with-api
 #endregion
 
+//TODO LIST
+//1) Отслеживать изменение размеров окна
+//2) Выделение области влево вверх
+//3) Пофиксить вылет при пустом выделении (точка)
+//4) Фикс моргания сайта
+//5) Написать тесты
+//6) Обработка события, когда окно закрывается/сворачивается
+//7) Пофиксить дизайн формы
+//8) Добавить заполнение списка в форме при запуске, проверка на то существует ли окно на момент начала стрима
+//9) Документация
+//--------------------------
+//1*) Сохранение видео
+//2*) Сделать список динамическим (через апдейт) 
+
 namespace kursach
 {
     
@@ -41,13 +55,6 @@ namespace kursach
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            // БЫЛО
-            //IntPtr hwd = User32.GetForegroundWindow(); // TODO как-то это оформить в форму
-            //                                           // достает хэндл активного окна 
-            //Application.Run(new Form1(hwd));
-            //CupruteOne.SelectedRect(hwd);
-
             Application.Run(new Form2());
         }
     }
