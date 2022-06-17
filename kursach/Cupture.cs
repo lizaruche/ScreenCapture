@@ -20,7 +20,6 @@ namespace kursach
 
             Point botLeft = new Point(boundsOfWindow.Right - SelectedRectangle.Right, boundsOfWindow.Bottom - SelectedRectangle.Bottom);
 
-            Form f = new Form(); 
 
             var timer = new Timer() { Interval = 40 }; // создаем объект Timer и устанавливаем интервал на 40 мс
             timer.Tick += (s, e) => // на тик таймера сохраняем изображение и вызываем метод для отправки его на сервер
@@ -31,12 +30,18 @@ namespace kursach
                 Bitmap bitmap = new Bitmap(SelectedRectangle.Width, SelectedRectangle.Height); // формируем объект 
                 Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
                 g1.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b); // копируем изображение с экрана
-                SendToServ(bitmap); // отправляем на сервер
+                try
+                {
+                    SendToServ(bitmap); // отправляем на сервер
+                }
+                catch
+                {
+
+                }
                 g1.Dispose(); // удаляем средство рисования
             };
             timer.Start(); // запускаем таймер
 
-            Application.Run(f);
         }
         /// <summary>
         /// Отправляет Bitmap объект на сервер 

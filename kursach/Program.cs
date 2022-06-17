@@ -20,6 +20,7 @@ using System.Windows.Forms;
 //через параметры которой системе задаются критерии вывода данных на физическое устройство отображения
 #endregion
 #region Юзфул ссылки
+// Получить все открытые окна: https://translated.turbopages.org/proxy_u/en-ru.ru.b2adc1c1-62ac5c8b-096f0a5b-74722d776562/https/stackoverflow.com/questions/7268302/get-the-titles-of-all-open-windows
 // Как получить Handle Окна при наведении мышкой https://www.cyberforum.ru/csharp-net/thread635343.html
 // Saving a screenshot of a window using C#, WPF, and DWM https://stackoverflow.com/questions/1858122/saving-a-screenshot-of-a-window-using-c-wpf-and-dwm/1897285#1897285
 // Как получить изображение свёрнутого окна? https://www.cyberforum.ru/csharp-net/thread1494328.html
@@ -41,13 +42,13 @@ namespace kursach
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Thread.Sleep(2000);
-            IntPtr hwd = User32.GetForegroundWindow(); // TODO как-то это оформить в форму
-                                                       // достает хэндл активного окна 
+            // БЫЛО
+            //IntPtr hwd = User32.GetForegroundWindow(); // TODO как-то это оформить в форму
+            //                                           // достает хэндл активного окна 
+            //Application.Run(new Form1(hwd));
+            //CupruteOne.SelectedRect(hwd);
 
-            Application.Run(new Form1(hwd));
-
-            CupruteOne.SelectedRect(hwd);
+            Application.Run(new Form2());
         }
     }
 }
