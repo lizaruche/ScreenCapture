@@ -15,6 +15,7 @@ namespace kursach
 {
     public partial class Form2 : Form
     {
+        
         IDictionary<IntPtr, string> WindowsList = new Dictionary<IntPtr, string>();
 
         [DllImport("user32.dll")]
@@ -23,47 +24,51 @@ namespace kursach
         [DllImport("USER32.DLL")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        static void BringWindowToFront()
-        {
-            var currentProcess = Process.GetCurrentProcess();
-            var processes = Process.GetProcessesByName(currentProcess.ProcessName);
-            var process = processes.FirstOrDefault(p => p.Id != currentProcess.Id);
-            if (process == null) return;
-
-            SetForegroundWindow(process.MainWindowHandle);
-        }
         IntPtr hwd;
+        int selected_index;
+        string selected_name;
         public Form2()
         {
             InitializeComponent();
+            
+
         }
 
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            comboBox1.Items.Clear();
+            WindowsList = OpenWindowGetter.GetOpenWindows();
+            foreach (var item in WindowsList)
+            {
+                comboBox1.Items.Add(item.Value.ToString());
+            }
+        }
         private void button2_Click(object sender, EventArgs e)
         {
-            hwd = WindowsList.ToArray()[comboBox1.SelectedIndex].Key;
-            ShowWindow(WindowsList.ToArray()[comboBox1.SelectedIndex].Key, 4);
-            SetForegroundWindow(WindowsList.ToArray()[comboBox1.SelectedIndex].Key);
-
-            Thread.Sleep(100);
-            if (hwd != IntPtr.Zero)
+            if(selected_index == -1)
             {
-                Form1 form1 = new Form1(hwd);
-                form1.ShowDialog();
-                form1.Close();
-                CupruteOne.SelectedRect(hwd);
+                MessageBox.Show("Выберите окно, которое надо записать", "Ошибка", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Error);
             }
             else
             {
-                MessageBox.Show("Выберите окно, которое надо записать", "Ошибка", buttons: MessageBoxButtons.OK);
-            }
-        }
+                if (WindowsList.Values.Contains(selected_name))
+                {
+                    hwd = WindowsList.ToArray()[selected_index].Key; // берет индекс выбранного элемента и по ключу находит его в списке окон
+                    ShowWindow(WindowsList.ToArray()[selected_index].Key, 4); // выводит выбранное окно
+                    SetForegroundWindow(WindowsList.ToArray()[selected_index].Key); // на передний план
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            WindowsList = OpenWindowGetter.GetOpenWindows();
-            foreach(var item in WindowsList)
-            {
-                comboBox1.Items.Add(item.Value.ToString());
+                    Thread.Sleep(150);
+
+                    Form1 form1 = new Form1(hwd); // открывается форма для скриншота
+                    form1.ShowDialog();
+                    form1.Close();
+                    CupruteOne.SelectedRect(hwd);
+
+                }
+                else
+                {
+                    MessageBox.Show("Выбранного окна не существует", "Ошибка", buttons: MessageBoxButtons.OK, icon: MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -80,6 +85,20 @@ namespace kursach
         private void button4_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+            timer.Interval = 1000; // 1 sec интервал между обновлениями
+            timer.Tick += new EventHandler(timer_Tick);
+            timer.Start();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            selected_index = comboBox1.SelectedIndex;
+            selected_name = comboBox1.Items[selected_index].ToString();
         }
     }
 }
