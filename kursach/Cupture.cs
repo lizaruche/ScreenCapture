@@ -8,17 +8,20 @@ namespace kursach
 {
     public class CupruteOne
     {
+        // Выбранная пользователем область
         public static Rectangle SelectedRectangle;
+        /// <summary>
+        /// Копирование изображения с области окна приложения 
+        /// </summary>
+        /// <param name="hwd"> хэндл окна приложения </param>
         public static void SelectedRect(IntPtr hwd)
         {
-            Rect boundsOfWindow = default;
+            Rect boundsOfWindow = default; // объект структуры для метода getwindowrect (с Rectangle забирает лишнюю область, поэтому Rect)
             User32.GetWindowRect(hwd, ref boundsOfWindow); // достает размеры окна
 
-            Size b = new Size(SelectedRectangle.Width, SelectedRectangle.Height); // Размер окна
+            Point topLeftDif = new Point(SelectedRectangle.X - boundsOfWindow.Left, SelectedRectangle.Y - boundsOfWindow.Top); // разница левого верхнего угла 
 
-            Point movTrackDif = new Point(SelectedRectangle.X - boundsOfWindow.Left, SelectedRectangle.Y - boundsOfWindow.Top); // разница левого верхнего угла 
-
-            Size botRight = new Size(boundsOfWindow.Right - SelectedRectangle.Right, boundsOfWindow.Bottom - SelectedRectangle.Bottom);
+            Size botRightDif = new Size(boundsOfWindow.Right - boundsOfWindow.Left - SelectedRectangle.Width, boundsOfWindow.Bottom - boundsOfWindow.Top - SelectedRectangle.Height); // разница в ширине и высоте окна и выбранной области 
 
 
 
@@ -26,15 +29,15 @@ namespace kursach
             timer.Tick += (s, e) => // на тик таймера сохраняем изображение и вызываем метод для отправки его на сервер
             {
                 User32.GetWindowRect(hwd, ref boundsOfWindow); // трэчит размер окна
-                int windowWidth = boundsOfWindow.Right - boundsOfWindow.Left;
-                int windowHeight = boundsOfWindow.Bottom - boundsOfWindow.Top;
-                b = new Size(windowWidth - botRight.Width, windowHeight - botRight.Height); // трэчит размеры окна
+                int windowWidth = boundsOfWindow.Right - boundsOfWindow.Left; // ширина окна
+                int windowHeight = boundsOfWindow.Bottom - boundsOfWindow.Top; // высота окна
+                Size b = new Size(windowWidth - botRightDif.Width, windowHeight - botRightDif.Height); // трэчит размеры окна
 
-                if (b.Width > 0 && b.Height > 0) 
+                if (b.Width > 0 && b.Height > 0)  
                 {
                     Bitmap bitmap = new Bitmap(b.Width, b.Height); // формируем объект 
                     Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
-                    g1.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b); // копируем изображение с экрана
+                    g1.CopyFromScreen(boundsOfWindow.Left + topLeftDif.X, boundsOfWindow.Top + topLeftDif.Y, 0, 0, b); // копируем изображение с экрана
                     try
                     {
                         SendToServ(bitmap); // отправляем на сервер
@@ -44,7 +47,7 @@ namespace kursach
 
                     }
                     g1.Dispose(); // удаляем средство рисования
-                }
+                } // else вывести уедомление, чтобы пользователь сделал окно побольше, а то захватывать нечего
             };
             timer.Start(); // запускаем таймер
 
