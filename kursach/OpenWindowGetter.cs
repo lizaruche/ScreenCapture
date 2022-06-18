@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Runtime.InteropServices;
-using HWND = System.IntPtr;
 
 namespace kursach
 {
@@ -13,21 +12,21 @@ namespace kursach
     {
         /// <summary>Returns a dictionary that contains the handle and title of all the open windows.</summary>
         /// <returns>A dictionary that contains the handle and title of all the open windows.</returns>
-        public static IDictionary<HWND, string> GetOpenWindows()
+        public static IDictionary<IntPtr, string> GetOpenWindows()
         {
-            HWND shellWindow = GetShellWindow();
-            Dictionary<HWND, string> windows = new Dictionary<HWND, string>();
+            IntPtr shellWindow = User32.GetShellWindow();
+            Dictionary<IntPtr, string> windows = new Dictionary<IntPtr, string>();
 
-            EnumWindows(delegate (HWND hWnd, int lParam)
+            User32.EnumWindows(delegate (IntPtr hWnd, int lParam)
             {
                 if (hWnd == shellWindow) return true;
-                if (!IsWindowVisible(hWnd)) return true;
+                if (!User32.IsWindowVisible(hWnd)) return true;
 
-                int length = GetWindowTextLength(hWnd);
+                int length = User32.GetWindowTextLength(hWnd);
                 if (length == 0) return true;
 
                 StringBuilder builder = new StringBuilder(length);
-                GetWindowText(hWnd, builder, length + 1);
+                User32.GetWindowText(hWnd, builder, length + 1);
 
                 windows[hWnd] = builder.ToString();
                 return true;
@@ -36,22 +35,5 @@ namespace kursach
 
             return windows;
         }
-
-        private delegate bool EnumWindowsProc(HWND hWnd, int lParam);
-
-        [DllImport("USER32.DLL")]
-        private static extern bool EnumWindows(EnumWindowsProc enumFunc, int lParam);
-
-        [DllImport("USER32.DLL")]
-        private static extern int GetWindowText(HWND hWnd, StringBuilder lpString, int nMaxCount);
-
-        [DllImport("USER32.DLL")]
-        private static extern int GetWindowTextLength(HWND hWnd);
-
-        [DllImport("USER32.DLL")]
-        private static extern bool IsWindowVisible(HWND hWnd);
-
-        [DllImport("USER32.DLL")]
-        private static extern IntPtr GetShellWindow();
     }
 }

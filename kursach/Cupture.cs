@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace kursach
 {
@@ -11,7 +10,7 @@ namespace kursach
         /// <summary>
         /// таймер для отправки кадров на сервер с интервалом 40 мс
         /// </summary>
-        private static FrameTimer timer = new FrameTimer() { Interval = 40 };
+        readonly static FrameTimer timer = new FrameTimer() { Interval = 40 };
         
         /// <summary>
         /// Начать стри
@@ -50,8 +49,8 @@ namespace kursach
                 streamWriter.Close(); // закрытие потока
             }
 
-            WebResponse httpResponse = request.GetResponse(); // возвращает ответ на запрос 
-            using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            WebResponse response = request.GetResponse(); // возвращает ответ на запрос 
+            using (StreamReader streamReader = new StreamReader(response.GetResponseStream()))
             {
                 var result = streamReader.ReadToEnd(); // сохраняем ответ на запрос в переменную result
             }

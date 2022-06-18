@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.IO;
 using System.Net;
 using System.Drawing;
 
@@ -25,14 +24,13 @@ namespace kursach
                 Bitmap bitmap = new Bitmap(b.Width, b.Height); // формируем объект 
                 Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
                 g1.CopyFromScreen(boundsOfWindow.Left + topLeftDif.X, boundsOfWindow.Top + topLeftDif.Y, 0, 0, b); // копируем изображение с экрана
-                try
-                {
-                    Stream.SendToServ(bitmap); // отправляем на сервер
-                }
-                catch
-                {
 
+                try { Stream.SendToServ(bitmap); } // отправляем на сервер
+                catch (WebException)
+                { 
+                    // выводить алерт ошибка подключения к серверу
                 }
+
                 g1.Dispose(); // удаляем средство рисования
             }
         }

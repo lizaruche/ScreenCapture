@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Windows.Forms;
 
 // Работает осталось понять че тут происходит https://www.codeproject.com/Articles/3024/Capturing-the-Screen-Image-in-C
@@ -41,13 +40,13 @@ using System.Windows.Forms;
 //7) Пофиксить дизайн формы
 //+8) Добавить заполнение списка в форме при запуске, проверка на то существует ли окно на момент начала стрима
 //9) Документация
+//10) Оповещение об ошибке подключения к серверу (класс FrameTimer)
 //--------------------------
 //1*) Сохранение видео
 //+2*) Сделать список динамическим (через апдейт) 
 
 namespace kursach
-{
-    
+{   
     static class Program
     {
         [STAThread]
