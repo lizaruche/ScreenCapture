@@ -31,6 +31,7 @@ namespace kursach
         {
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             InitializeComponent();
+
             Animator.Start();
         }
 

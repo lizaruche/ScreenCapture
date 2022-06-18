@@ -27,8 +27,10 @@ namespace kursach
 
                 try { Stream.SendToServ(bitmap); } // отправляем на сервер
                 catch (WebException)
-                { 
-                    // выводить алерт ошибка подключения к серверу
+                {
+                    MessageBox.Show("Ошибка при подключении к серверу. Трансляция остановлена", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                    Stream.Stop();
                 }
 
                 g1.Dispose(); // удаляем средство рисования
