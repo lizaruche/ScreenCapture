@@ -28,79 +28,107 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.label1 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.customButton3 = new kursach.CustomButton();
+            this.customButton2 = new kursach.CustomButton();
+            this.customButton1 = new kursach.CustomButton();
+            this.customComboBox1 = new kursach.CustomComboBox();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(12, 36);
+            this.label1.Font = new System.Drawing.Font("Verdana", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(8, 48);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(128, 20);
+            this.label1.Size = new System.Drawing.Size(165, 20);
             this.label1.TabIndex = 1;
             this.label1.Text = "Выберите окно:";
             // 
-            // button2
+            // customButton3
             // 
-            this.button2.Font = new System.Drawing.Font("Microsoft YaHei UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(271, 386);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(199, 66);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "Начать стрим";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.customButton3.AnimColor = System.Drawing.Color.White;
+            this.customButton3.BackColor = System.Drawing.Color.Transparent;
+            this.customButton3.BorderColor = System.Drawing.Color.Black;
+            this.customButton3.BorderColorEnabled = true;
+            this.customButton3.Font = new System.Drawing.Font("Verdana", 13F, System.Drawing.FontStyle.Bold);
+            this.customButton3.ForeColor = System.Drawing.Color.White;
+            this.customButton3.Location = new System.Drawing.Point(16, 399);
+            this.customButton3.Name = "customButton3";
+            this.customButton3.NewBackColor = System.Drawing.Color.Red;
+            this.customButton3.Rounding = 75;
+            this.customButton3.RoundingEnable = true;
+            this.customButton3.Size = new System.Drawing.Size(107, 43);
+            this.customButton3.TabIndex = 11;
+            this.customButton3.Text = "Выход";
+            this.customButton3.Click += new System.EventHandler(this.customButton3_Click);
             // 
-            // comboBox1
+            // customButton2
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(16, 59);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(263, 21);
-            this.comboBox1.TabIndex = 4;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.customButton2.AnimColor = System.Drawing.Color.White;
+            this.customButton2.BackColor = System.Drawing.Color.Transparent;
+            this.customButton2.BorderColor = System.Drawing.Color.Black;
+            this.customButton2.BorderColorEnabled = true;
+            this.customButton2.Font = new System.Drawing.Font("Verdana", 13F, System.Drawing.FontStyle.Bold);
+            this.customButton2.ForeColor = System.Drawing.Color.White;
+            this.customButton2.Location = new System.Drawing.Point(285, 373);
+            this.customButton2.Name = "customButton2";
+            this.customButton2.NewBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(147)))), ((int)(((byte)(43)))));
+            this.customButton2.Rounding = 75;
+            this.customButton2.RoundingEnable = true;
+            this.customButton2.Size = new System.Drawing.Size(199, 66);
+            this.customButton2.TabIndex = 10;
+            this.customButton2.Text = "Старт стрим";
+            this.customButton2.Click += new System.EventHandler(this.customButton2_Click_1);
             // 
-            // button3
+            // customButton1
             // 
-            this.button3.BackColor = System.Drawing.Color.Firebrick;
-            this.button3.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button3.Location = new System.Drawing.Point(12, 405);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(111, 47);
-            this.button3.TabIndex = 6;
-            this.button3.Text = "Выход";
-            this.button3.UseVisualStyleBackColor = false;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.customButton1.AnimColor = System.Drawing.Color.White;
+            this.customButton1.BorderColor = System.Drawing.Color.Black;
+            this.customButton1.BorderColorEnabled = true;
+            this.customButton1.Font = new System.Drawing.Font("Verdana", 13F, System.Drawing.FontStyle.Bold);
+            this.customButton1.ForeColor = System.Drawing.Color.White;
+            this.customButton1.Location = new System.Drawing.Point(285, 376);
+            this.customButton1.Name = "customButton1";
+            this.customButton1.NewBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(147)))), ((int)(((byte)(43)))));
+            this.customButton1.Rounding = 75;
+            this.customButton1.RoundingEnable = true;
+            this.customButton1.Size = new System.Drawing.Size(199, 63);
+            this.customButton1.TabIndex = 9;
+            this.customButton1.Text = "Стоп стрим";
+            this.customButton1.Visible = false;
+            this.customButton1.Click += new System.EventHandler(this.customButton1_Click_1);
             // 
-            // button4
+            // customComboBox1
             // 
-            this.button4.Font = new System.Drawing.Font("Microsoft YaHei UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button4.Location = new System.Drawing.Point(271, 386);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(199, 66);
-            this.button4.TabIndex = 7;
-            this.button4.Text = "Стоп стрим";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Visible = false;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.customComboBox1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.customComboBox1.BorderColor = System.Drawing.Color.Navy;
+            this.customComboBox1.BorderSize = 1;
+            this.customComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
+            this.customComboBox1.Font = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.customComboBox1.ForeColor = System.Drawing.Color.DimGray;
+            this.customComboBox1.IconColor = System.Drawing.Color.Navy;
+            this.customComboBox1.ListBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(228)))), ((int)(((byte)(245)))));
+            this.customComboBox1.ListTextColor = System.Drawing.Color.DimGray;
+            this.customComboBox1.Location = new System.Drawing.Point(12, 71);
+            this.customComboBox1.MinimumSize = new System.Drawing.Size(200, 30);
+            this.customComboBox1.Name = "customComboBox1";
+            this.customComboBox1.Padding = new System.Windows.Forms.Padding(1);
+            this.customComboBox1.Size = new System.Drawing.Size(269, 30);
+            this.customComboBox1.TabIndex = 8;
+            this.customComboBox1.Texts = "";
+            this.customComboBox1.OnSelectedIndexChanged += new System.EventHandler(this.customComboBox1_OnSelectedIndexChanged);
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(723, 474);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.customButton3);
+            this.Controls.Add(this.customButton2);
+            this.Controls.Add(this.customButton1);
+            this.Controls.Add(this.customComboBox1);
             this.Controls.Add(this.label1);
             this.Name = "Form2";
             this.Text = "ScreenCapture";
@@ -112,9 +140,9 @@
 
         #endregion
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private CustomComboBox customComboBox1;
+        private CustomButton customButton1;
+        private CustomButton customButton2;
+        private CustomButton customButton3;
     }
 }
