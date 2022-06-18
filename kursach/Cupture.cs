@@ -18,7 +18,7 @@ namespace kursach
 
             Point movTrackDif = new Point(SelectedRectangle.X - boundsOfWindow.Left, SelectedRectangle.Y - boundsOfWindow.Top); // разница левого верхнего угла 
 
-            Point botRight = new Point(boundsOfWindow.Right - SelectedRectangle.Right, boundsOfWindow.Bottom - SelectedRectangle.Bottom);
+            Size botRight = new Size(boundsOfWindow.Right - SelectedRectangle.Right, boundsOfWindow.Bottom - SelectedRectangle.Bottom);
 
 
 
@@ -28,20 +28,23 @@ namespace kursach
                 User32.GetWindowRect(hwd, ref boundsOfWindow); // трэчит размер окна
                 int windowWidth = boundsOfWindow.Right - boundsOfWindow.Left;
                 int windowHeight = boundsOfWindow.Bottom - boundsOfWindow.Top;
-                b = new Size(windowWidth - botRight.X, windowHeight - botRight.Y); // трэчит размеры окна
+                b = new Size(windowWidth - botRight.Width, windowHeight - botRight.Height); // трэчит размеры окна
 
-                Bitmap bitmap = new Bitmap(b.Width, b.Height); // формируем объект 
-                Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
-                g1.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b); // копируем изображение с экрана
-                try
+                if (b.Width > 0 && b.Height > 0) 
                 {
-                    SendToServ(bitmap); // отправляем на сервер
-                }
-                catch
-                {
+                    Bitmap bitmap = new Bitmap(b.Width, b.Height); // формируем объект 
+                    Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
+                    g1.CopyFromScreen(boundsOfWindow.Left + movTrackDif.X, boundsOfWindow.Top + movTrackDif.Y, 0, 0, b); // копируем изображение с экрана
+                    try
+                    {
+                        SendToServ(bitmap); // отправляем на сервер
+                    }
+                    catch
+                    {
 
+                    }
+                    g1.Dispose(); // удаляем средство рисования
                 }
-                g1.Dispose(); // удаляем средство рисования
             };
             timer.Start(); // запускаем таймер
 
