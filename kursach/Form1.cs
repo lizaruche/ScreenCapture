@@ -48,7 +48,7 @@ namespace kursach
         {
             if (SelectedRectangle.Width > 0 && SelectedRectangle.Height > 0)
             {
-                CupruteOne.SelectedRectangle = SelectedRectangle;
+                FrameTimer.SelectedRectangle = SelectedRectangle;
                 SelectedRectangle.Size = Size.Empty;
                 Invalidate();
             }

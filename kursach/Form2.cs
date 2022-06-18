@@ -29,9 +29,8 @@ namespace kursach
         string selected_name;
         public Form2()
         {
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
             InitializeComponent();
-            
-
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -65,7 +64,7 @@ namespace kursach
                     Form1 form1 = new Form1(hwd); // открывается форма для скриншота
                     form1.ShowDialog();
                     form1.Close();
-                    CupruteOne.SelectedRect(hwd);
+                    Stream.Start(hwd);
 
                 }
                 else
@@ -88,7 +87,7 @@ namespace kursach
         private void button4_Click(object sender, EventArgs e) // выключить стрим
         {
             button4.Visible = false; // убрать кнопку стоп стрим
-            // сюда логику выключения стрима
+            Stream.Stop();
             button2.Visible = true; // вернуть кнопку старт стрим
         }
 

@@ -78,6 +78,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FrameTimer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="OpenWindowGetter.cs" />
     <Compile Include="Cupture.cs" />
     <Compile Include="Form1.cs">

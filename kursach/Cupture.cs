@@ -6,62 +6,35 @@ using System.Windows.Forms;
 
 namespace kursach
 {
-    public class CupruteOne
+    public class Stream
     {
-        // Выбранная пользователем область
-        public static Rectangle SelectedRectangle;
         /// <summary>
-        /// Копирование изображения с области окна приложения 
+        /// таймер для отправки кадров на сервер с интервалом 40 мс
         /// </summary>
-        /// <param name="hwd"> хэндл окна приложения </param>
-        public static void SelectedRect(IntPtr hwd)
+        private static FrameTimer timer = new FrameTimer() { Interval = 40 };
+        
+        /// <summary>
+        /// Начать стри
+        /// </summary>
+        /// <param name="hwd"> хэндл окна для захвата </param>
+        public static void Start(IntPtr hwd)
         {
-            Rect boundsOfWindow = default; // объект структуры для метода getwindowrect (с Rectangle забирает лишнюю область, поэтому Rect)
-            User32.GetWindowRect(hwd, ref boundsOfWindow); // достает размеры окна
-
-            Point topLeftDif = new Point(SelectedRectangle.X - boundsOfWindow.Left, SelectedRectangle.Y - boundsOfWindow.Top); // разница левого верхнего угла 
-
-            Size botRightDif = new Size(boundsOfWindow.Right - boundsOfWindow.Left - SelectedRectangle.Width, boundsOfWindow.Bottom - boundsOfWindow.Top - SelectedRectangle.Height); // разница в ширине и высоте окна и выбранной области 
-
-
-
-            var timer = new Timer() { Interval = 40 }; // создаем объект Timer и устанавливаем интервал на 40 мс
-            timer.Tick += (s, e) => // на тик таймера сохраняем изображение и вызываем метод для отправки его на сервер
-            {
-                User32.GetWindowRect(hwd, ref boundsOfWindow); // трэчит размер окна
-                int windowWidth = boundsOfWindow.Right - boundsOfWindow.Left; // ширина окна
-                int windowHeight = boundsOfWindow.Bottom - boundsOfWindow.Top; // высота окна
-                Size b = new Size(windowWidth - botRightDif.Width, windowHeight - botRightDif.Height); // трэчит размеры окна
-
-                if (b.Width > 0 && b.Height > 0)  
-                {
-                    Bitmap bitmap = new Bitmap(b.Width, b.Height); // формируем объект 
-                    Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
-                    g1.CopyFromScreen(boundsOfWindow.Left + topLeftDif.X, boundsOfWindow.Top + topLeftDif.Y, 0, 0, b); // копируем изображение с экрана
-                    try
-                    {
-                        SendToServ(bitmap); // отправляем на сервер
-                    }
-                    catch
-                    {
-
-                    }
-                    g1.Dispose(); // удаляем средство рисования
-                } // else вывести уедомление, чтобы пользователь сделал окно побольше, а то захватывать нечего
-            };
-            timer.Start(); // запускаем таймер
-
+            FrameTimer.SelectedRect(hwd);
+            timer.Start();   
+        }
+        /// <summary>
+        /// Остановаить стрим
+        /// </summary>
+        public static void Stop()
+        {
+            timer.Stop();
         }
         /// <summary>
         /// Отправляет Bitmap объект на сервер 
         /// </summary>
         /// <param name="img"> Bitmap для отправки</param>
-        static void SendToServ(Bitmap img)
+        public static void SendToServ(Bitmap img)
         { 
-            MemoryStream ms = new MemoryStream(); // поток для сохранения объекта в jpeg
-            img.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg); // сохранение объекта в поток
-            byte[] byteImage = ms.ToArray(); // строковое представление объекта 
-            string imgBase64 = Convert.ToBase64String(byteImage); // формирование base64
 
             WebRequest request = WebRequest.Create("http://127.0.0.1:5000/base64_img"); // сохдание объекта запроса
             request.ContentType = "application/json"; // тип контента в запросе
@@ -69,11 +42,11 @@ namespace kursach
 
             using (StreamWriter streamWriter = new StreamWriter(request.GetRequestStream()))
             {
-                string json = "{\"base64_img\":" + $"\"{imgBase64}\"," +
+                string json = "{\"base64_img\":" + $"\"{ConvertToBase64(img)}\"," +
                               "\"format\":\"jpeg\"}";
 
                 streamWriter.Write(json); // записывает json в поток запроса
-                streamWriter.Flush(); // чиска буферов средства записи
+                streamWriter.Flush(); // чистка буферов средства записи
                 streamWriter.Close(); // закрытие потока
             }
 
@@ -83,5 +56,12 @@ namespace kursach
                 var result = streamReader.ReadToEnd(); // сохраняем ответ на запрос в переменную result
             }
         }
-    }
+        private static string ConvertToBase64(Bitmap img)
+        {
+            MemoryStream ms = new MemoryStream(); // поток для сохранения объекта в jpeg
+            img.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg); // сохранение объекта в поток
+            byte[] byteImage = ms.ToArray(); // строковое представление объекта 
+            return Convert.ToBase64String(byteImage); // формирование base64
+        }
+    }   
 }
