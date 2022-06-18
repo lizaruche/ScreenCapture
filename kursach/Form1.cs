@@ -12,6 +12,7 @@ namespace kursach
 {
     public partial class Form1 : Form
     {
+        Point original; // локация точки, при нажатии мышью
         public static Rectangle SelectedRectangle; // выбранная пользователем область 
         public IntPtr Hwd; // выбранное пользователем окно
         public Form1(IntPtr hwd) // форма для выбора области
@@ -40,7 +41,7 @@ namespace kursach
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            SelectedRectangle.Location = e.Location;
+            original = e.Location;
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -54,14 +55,30 @@ namespace kursach
             this.Close();
         }
 
+        Rectangle GetSelRectangle(Point orig, Point location) // получаем выделенный прямоугольник
+        {
+            int deltaX = location.X - orig.X;
+            int deltaY = location.Y - orig.Y;
+            Size s = new Size(Math.Abs(deltaX), Math.Abs(deltaY));
+            Rectangle rect = new Rectangle();
+            if (deltaX >= 0 & deltaY >= 0)
+                rect = new Rectangle(orig, s);
+            if (deltaX < 0 & deltaY > 0)
+                rect = new Rectangle(location.X, orig.Y, s.Width, s.Height);
+            if (deltaX < 0 & deltaY < 0)
+                rect = new Rectangle(location, s);
+            if (deltaX > 0 & deltaY < 0)
+                rect = new Rectangle(orig.X, location.Y, s.Width, s.Height);
+            return rect;
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            var newSize = new Size(e.X - SelectedRectangle.Left, e.Y - SelectedRectangle.Top);
+            SelectedRectangle = GetSelRectangle(original, e.Location);
 
             if (MouseButtons == MouseButtons.Left)
-                if (newSize.Width > 5 && newSize.Height > 5)
+                if (SelectedRectangle.Width > 5 && SelectedRectangle.Height > 5)
                 {
-                    SelectedRectangle.Size = newSize;
                     Invalidate();
                 }
         }
@@ -71,15 +88,6 @@ namespace kursach
             r.Exclude(SelectedRectangle);
             using (var brush = new SolidBrush(Color.FromArgb(20, 0, 0, 0)))
                 e.Graphics.FillRegion(brush, r);
-        }
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Form1_Load_1(object sender, EventArgs e)
-        {
-
         }
     }
 }

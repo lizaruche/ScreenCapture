@@ -59,6 +59,9 @@ namespace kursach
 
                     Thread.Sleep(150);
 
+                    button2.Visible = false; // убирается кнопка запуска стрима
+                    button4.Visible = true; // появляется кнопка остановки стрима
+
                     Form1 form1 = new Form1(hwd); // открывается форма для скриншота
                     form1.ShowDialog();
                     form1.Close();
@@ -82,9 +85,11 @@ namespace kursach
                 return; 
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e) // выключить стрим
         {
-
+            button4.Visible = false; // убрать кнопку стоп стрим
+            // сюда логику выключения стрима
+            button2.Visible = true; // вернуть кнопку старт стрим
         }
 
         private void Form2_Load(object sender, EventArgs e)
