@@ -22,7 +22,7 @@ namespace kursach
 
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
 
-            new Button { Text = "Close me", Parent = this }.Click += (o, e) => Application.Exit();
+            new Button { Text = "Закрыть", Parent = this }.Click += (o, e) => Application.Exit();
             this.FormBorderStyle = FormBorderStyle.None;
             TopMost = true;
             ShowInTaskbar = false;

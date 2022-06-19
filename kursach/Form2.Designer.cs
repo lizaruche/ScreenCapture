@@ -33,6 +33,7 @@
             this.customButton2 = new kursach.CustomButton();
             this.customButton1 = new kursach.CustomButton();
             this.customComboBox1 = new kursach.CustomComboBox();
+            this.customToggleSwitch1 = new kursach.CustomToggleSwitch();
             this.SuspendLayout();
             // 
             // label1
@@ -120,11 +121,28 @@
             this.customComboBox1.Texts = "";
             this.customComboBox1.OnSelectedIndexChanged += new System.EventHandler(this.customComboBox1_OnSelectedIndexChanged);
             // 
+            // customToggleSwitch1
+            // 
+            this.customToggleSwitch1.BackColor = System.Drawing.Color.White;
+            this.customToggleSwitch1.BackColorOFF = System.Drawing.Color.Red;
+            this.customToggleSwitch1.BackColorON = System.Drawing.Color.DarkGreen;
+            this.customToggleSwitch1.Checked = false;
+            this.customToggleSwitch1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.customToggleSwitch1.Font = new System.Drawing.Font("Verdana", 9F);
+            this.customToggleSwitch1.Location = new System.Drawing.Point(308, 71);
+            this.customToggleSwitch1.Name = "customToggleSwitch1";
+            this.customToggleSwitch1.Size = new System.Drawing.Size(176, 15);
+            this.customToggleSwitch1.TabIndex = 12;
+            this.customToggleSwitch1.Text = "Захватить всё окно";
+            this.customToggleSwitch1.TextOnChecked = "";
+            this.customToggleSwitch1.CheckedChanged += new kursach.CustomToggleSwitch.OnCheckedChangedHandler(this.customToggleSwitch1_CheckedChanged);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(723, 474);
+            this.Controls.Add(this.customToggleSwitch1);
             this.Controls.Add(this.customButton3);
             this.Controls.Add(this.customButton2);
             this.Controls.Add(this.customButton1);
@@ -144,5 +162,6 @@
         private CustomButton customButton1;
         private CustomButton customButton2;
         private CustomButton customButton3;
+        private CustomToggleSwitch customToggleSwitch1;
     }
 }

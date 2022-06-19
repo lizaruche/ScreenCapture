@@ -19,6 +19,7 @@ namespace kursach
         IDictionary<IntPtr, string> WindowsList = new Dictionary<IntPtr, string>();
 
         public static bool StreamIsRunning { get; set; } // Проверка на то идет ли стрим
+        public static bool CaptureFullScreen { get; set; } = false; // Выбор захватывать весь экран или область
 
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -81,17 +82,23 @@ namespace kursach
                     ShowWindow(WindowsList.ToArray()[selected_index].Key, 4); // выводит выбранное окно
                     SetForegroundWindow(WindowsList.ToArray()[selected_index].Key); // на передний план
 
-                    Thread.Sleep(250);
-
+                    Thread.Sleep(250); // Пауза перед скрином, чтобы окно открылось
 
                     customButton1.Visible = true; // появляется кнопка остановки стрима
                     customButton2.Visible = false; // убирается кнопка запуска стрима
 
-                    Form1 form1 = new Form1(hwd); // открывается форма для скриншота
-                    form1.ShowDialog();
-                    form1.Close();
-                    Stream.Start(hwd);
+                    if (CaptureFullScreen) // Если выбрана опция стримить все приложение
+                    {
 
+                    }
+                    else // Если стримить часть приложения
+                    {
+                        Form1 form1 = new Form1(hwd); // открывается форма для скриншота
+                        form1.ShowDialog();
+                        form1.Close();
+                    }
+
+                    Stream.Start(hwd);
                 }
                 else
                 {
@@ -116,6 +123,18 @@ namespace kursach
                 Close();
             else
                 return;
+        }
+
+        private void customToggleSwitch1_CheckedChanged(object sender)
+        {
+            if (customToggleSwitch1.Checked)
+            {
+                CaptureFullScreen = true;
+            }
+            else
+            {
+                CaptureFullScreen = false;
+            }
         }
     }
 }

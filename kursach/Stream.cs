@@ -13,7 +13,7 @@ namespace kursach
         readonly static FrameTimer timer = new FrameTimer() { Interval = 40 };
         
         /// <summary>
-        /// Начать стри
+        /// Начать стрим
         /// </summary>
         /// <param name="hwd"> хэндл окна для захвата </param>
         public static void Start(IntPtr hwd)
