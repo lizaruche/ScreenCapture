@@ -52,6 +52,11 @@ namespace kursach
                 customButton1.Visible = false; // убрать кнопку стоп стрим
                 customButton2.Visible = true; // вернуть кнопку старт стрим
             }
+            else
+            {
+                customButton2.Visible = false; // убрать кнопку старт стрим
+                customButton1.Visible = true; // вернуть кнопку стоп стрим
+            }
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -86,18 +91,14 @@ namespace kursach
 
                     customButton1.Visible = true; // появляется кнопка остановки стрима
                     customButton2.Visible = false; // убирается кнопка запуска стрима
+                    StreamIsRunning = true;
 
-                    if (CaptureFullScreen) // Если выбрана опция стримить все приложение
-                    {
-
-                    }
-                    else // Если стримить часть приложения
+                    if (!CaptureFullScreen) // Если выбрана опция стримить часть приложения
                     {
                         Form1 form1 = new Form1(hwd); // открывается форма для скриншота
                         form1.ShowDialog();
                         form1.Close();
                     }
-
                     Stream.Start(hwd);
                 }
                 else
@@ -111,6 +112,7 @@ namespace kursach
         {
             customButton1.Visible = false; // убрать кнопку стоп стрим
             customButton2.Visible = true; // вернуть кнопку старт стрим
+            StreamIsRunning = false;
 
             Stream.Stop();
         }
