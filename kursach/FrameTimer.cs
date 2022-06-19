@@ -12,6 +12,7 @@ namespace kursach
         private static Size botRightDif;
         private static IntPtr hwd;
         public static Rectangle SelectedRectangle;
+        bool MsgBoxIsDisplayed = false;
         protected override void OnTick(EventArgs e)
         {
             User32.GetWindowRect(hwd, ref boundsOfWindow); // трэчит размер окна
@@ -28,7 +29,16 @@ namespace kursach
                 try { Stream.SendToServ(bitmap); } // отправляем на сервер
                 catch (WebException)
                 {
-                    MessageBox.Show("Ошибка при подключении к серверу. Трансляция остановлена", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    if (MsgBoxIsDisplayed == false)
+                    {
+                        MsgBoxIsDisplayed = true;
+                        if (MessageBox.Show("Ошибка при подключении к серверу. Трансляция остановлена", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning) == DialogResult.OK)
+                        {
+                            MsgBoxIsDisplayed = false;
+
+                            Form2.StreamIsRunning = false;
+                        }
+                    }
 
                     Stream.Stop();
                 }

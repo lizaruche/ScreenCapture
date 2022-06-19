@@ -18,6 +18,8 @@ namespace kursach
         
         IDictionary<IntPtr, string> WindowsList = new Dictionary<IntPtr, string>();
 
+        public static bool StreamIsRunning { get; set; } // Проверка на то идет ли стрим
+
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
@@ -42,6 +44,12 @@ namespace kursach
             foreach (var item in WindowsList)
             {
                 customComboBox1.Items.Add(item.Value.ToString());
+            }
+
+            if (!StreamIsRunning)
+            {
+                customButton1.Visible = false; // убрать кнопку стоп стрим
+                customButton2.Visible = true; // вернуть кнопку старт стрим
             }
         }
 
@@ -75,8 +83,9 @@ namespace kursach
 
                     Thread.Sleep(250);
 
-                    customButton2.Visible = false; // убирается кнопка запуска стрима
+
                     customButton1.Visible = true; // появляется кнопка остановки стрима
+                    customButton2.Visible = false; // убирается кнопка запуска стрима
 
                     Form1 form1 = new Form1(hwd); // открывается форма для скриншота
                     form1.ShowDialog();
@@ -94,8 +103,9 @@ namespace kursach
         private void customButton1_Click_1(object sender, EventArgs e) // Остановить стрим
         {
             customButton1.Visible = false; // убрать кнопку стоп стрим
-            Stream.Stop();
             customButton2.Visible = true; // вернуть кнопку старт стрим
+
+            Stream.Stop();
         }
 
         private void customButton3_Click(object sender, EventArgs e) // Выход

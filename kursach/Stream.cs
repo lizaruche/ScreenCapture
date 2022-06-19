@@ -27,6 +27,7 @@ namespace kursach
         public static void Stop()
         {
             timer.Stop();
+
         }
         /// <summary>
         /// Отправляет Bitmap объект на сервер 
