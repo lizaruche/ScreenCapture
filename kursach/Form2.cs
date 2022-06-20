@@ -16,7 +16,7 @@ namespace kursach
     public partial class Form2 : Form
     {
         
-        IDictionary<IntPtr, string> WindowsList = new Dictionary<IntPtr, string>();
+        IDictionary<IntPtr, string> WindowsList = new Dictionary<IntPtr, string>(); // Список всех открытых окон
 
         public static bool StreamIsRunning { get; set; } // Проверка на то идет ли стрим
         public static bool CaptureFullScreen { get; set; } = false; // Выбор захватывать весь экран или область
@@ -42,6 +42,10 @@ namespace kursach
         {
             customComboBox1.Items.Clear();
             WindowsList = OpenWindowGetter.GetOpenWindows();
+
+            //var openWindowProcesses = System.Diagnostics.Process.GetProcesses().Where(p => p.MainWindowHandle != IntPtr.Zero && p.ProcessName != "explorer");
+            //openWindowProcesses.
+
             foreach (var item in WindowsList)
             {
                 customComboBox1.Items.Add(item.Value.ToString());

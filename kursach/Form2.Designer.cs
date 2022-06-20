@@ -55,7 +55,7 @@
             this.customToggleSwitch1.Checked = false;
             this.customToggleSwitch1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.customToggleSwitch1.Font = new System.Drawing.Font("Verdana", 9F);
-            this.customToggleSwitch1.Location = new System.Drawing.Point(307, 77);
+            this.customToggleSwitch1.Location = new System.Drawing.Point(298, 78);
             this.customToggleSwitch1.Name = "customToggleSwitch1";
             this.customToggleSwitch1.Size = new System.Drawing.Size(176, 15);
             this.customToggleSwitch1.TabIndex = 12;
