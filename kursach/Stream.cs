@@ -27,6 +27,7 @@ namespace kursach
         public static void Stop()
         {
             timer.Stop();
+            Form2.StreamIsRunning = false;
 
         }
         /// <summary>
