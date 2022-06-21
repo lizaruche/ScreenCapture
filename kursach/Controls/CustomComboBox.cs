@@ -107,7 +107,14 @@ namespace kursach
             // Открывает выпадающий список
             cmbList.Select();
             cmbList.DroppedDown = true;
+            Form2.RefreshWindowsList(); // обновление списка по клику
+            Items.Clear();
+            foreach(var item in Form2.WindowsList)
+            {
+                Items.Add(item.MainWindowTitle);
+            }
         }
+
         private void Surface_Click(object sender, EventArgs e)
         {
             // Привязка клика по надписи к клику юзера

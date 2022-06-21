@@ -15,7 +15,7 @@ namespace kursach
 {
     public partial class Form2 : Form
     {
-        List<Process> WindowsList = new List<Process>(); // Список всех открытых окон
+        public static List<Process> WindowsList = new List<Process>(); // Список всех открытых окон
         public static bool StreamIsRunning { get; set; } // Проверка на то идет ли стрим
         public static bool CaptureFullScreen { get; set; } = false; // Выбор захватывать весь экран или область
 
@@ -29,7 +29,8 @@ namespace kursach
         int selected_index;
         string selected_name;
         Process selected_process;
-        KeyValuePair<HWND, string> keyValuePair;
+
+        delegate void WindowProc(IntPtr hWnd, IntPtr lParam);
 
         public Form2()
         {
@@ -38,30 +39,30 @@ namespace kursach
 
             Animator.Start();
 
-            RefreshCombobox();
-
+            customComboBox1.Refresh();
         }
-        
-        private void RefreshCombobox()
-        {
-            WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "").ToList();
-            //WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "").ToDictionary(x => x.MainWindowHandle, x => x.MainWindowTitle);
-            
-            customComboBox1.Items.Clear();
-            foreach(var item in WindowsList)
-            {
-                customComboBox1.Items.Add(item.MainWindowTitle);
-            }
-            //customComboBox1.DisplayMember = "Value";
-            //customComboBox1.ValueMember = "Key";
-            //customComboBox1.DataSource = new BindingSource(WindowsList, null);
 
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+            timer.Interval = 250; // 1 sec интервал между обновлениями
+            timer.Tick += new EventHandler(timer_Tick);
+            timer.Start();
+        }
+
+        public static void RefreshWindowsList()
+        {
+            WindowsList.Clear();
+            WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowTitle != "" && proc.MainWindowHandle != IntPtr.Zero).ToList();
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            RefreshCombobox();
+            SwitchStopStartButton();
+        }
 
+        private void SwitchStopStartButton()
+        {
             if (!StreamIsRunning)
             {
                 customButton1.Visible = false; // убрать кнопку стоп стрим
@@ -74,21 +75,13 @@ namespace kursach
             }
         }
 
-        private void Form2_Load(object sender, EventArgs e)
-        {
-            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
-            timer.Interval = 1000; // 1 sec интервал между обновлениями
-            timer.Tick += new EventHandler(timer_Tick);
-            timer.Start();
-        }
-
         private void customComboBox1_OnSelectedIndexChanged(object sender, EventArgs e)
         {
             if(customComboBox1.SelectedIndex != -1)
             {
                 selected_index = customComboBox1.SelectedIndex;
-                selected_process = WindowsList.Where(x => x.MainWindowTitle == customComboBox1.SelectedItem.ToString()).FirstOrDefault();
                 selected_name = customComboBox1.SelectedItem.ToString();
+                selected_process = WindowsList.Where(x=>x.MainWindowTitle == selected_name).FirstOrDefault();
             }
         }
 
@@ -102,13 +95,11 @@ namespace kursach
             {
                 if (customComboBox1.Items.Contains(selected_name))
                 {
-                    //hwd = WindowsList.Where(x => x.MainWindowTitle == selected_name).FirstOrDefault().MainWindowHandle; ; // берет индекс выбранного элемента и по ключу находит его в списке окон
                     hwd = selected_process.MainWindowHandle;
 
-                    ShowWindow(hwd, 4); // выводит выбранное окно
-                    SetForegroundWindow(hwd); // на передний план
-
-                    Thread.Sleep(250); // Пауза перед скрином, чтобы окно открылось
+                    //ShowWindow(hwd, 4); // выводит выбранное окно
+                    //SetForegroundWindow(hwd); // на передний план
+                    //Thread.Sleep(250); // Пауза перед скрином, чтобы окно открылось
 
                     customButton1.Visible = true; // появляется кнопка остановки стрима
                     customButton2.Visible = false; // убирается кнопка запуска стрима

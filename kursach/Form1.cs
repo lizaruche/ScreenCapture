@@ -27,7 +27,7 @@ namespace kursach
                 this.Close();
                 Stream.Stop();
             };
-            this.FormBorderStyle = FormBorderStyle.None;
+            this.FormBorderStyle = FormBorderStyle.Fixed3D;
             TopMost = true;
             ShowInTaskbar = false;
             WindowState = FormWindowState.Maximized;

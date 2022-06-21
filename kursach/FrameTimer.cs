@@ -17,48 +17,35 @@ namespace kursach
         protected override void OnTick(EventArgs e)
         {
             User32.GetWindowRect(hwd, out boundsOfWindow); // трэчит размер окна
-            int windowWidth = boundsOfWindow.Width; // ширина окна
-            int windowHeight = boundsOfWindow.Height; // высота окна
-            Size b = new Size(windowWidth - botRightDif.Width, windowHeight - botRightDif.Height); // трэчит размеры окна
-            Size windowSize = new Size(windowWidth, windowHeight); // берет размеры окна
-
-            if (b.Width > 0 && b.Height > 0 || Form2.CaptureFullScreen)
+            if (boundsOfWindow.Width == 0 && boundsOfWindow.Height == 0) // если размер (0;0) - окно закрыто
             {
-                Bitmap bitmap;
+                Stream.Stop();
+            }
+            else
+            {
+                int windowWidth = boundsOfWindow.Width; // ширина окна
+                int windowHeight = boundsOfWindow.Height; // высота окна
+                Size windowSize = new Size(windowWidth - botRightDif.Width, windowHeight - botRightDif.Height); // трэчит размеры окна
 
-                if (Form2.CaptureFullScreen)
+                if (windowSize.Width > 0 && windowSize.Height > 0 || Form2.CaptureFullScreen)
                 {
+                    Bitmap bitmap;
+
                     bitmap = User32.PrintWindow(hwd); // формируем объект 
 
-                    //bitmap = new Bitmap(windowSize.Width, windowSize.Height); // формируем объект 
-                    //Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
-                    //g1.CopyFromScreen(boundsOfWindow.Left, boundsOfWindow.Top, 0, 0, windowSize);
-                    //g1.Dispose(); // удаляем средство рисования
-                }
-                else
-                {
-                    bitmap = User32.PrintWindow(hwd); // формируем объект 
-
-                    //bitmap = new Bitmap(b.Width, b.Height); // формируем объект 
-                    //Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
-                    //g1.CopyFromScreen(boundsOfWindow.Left + topLeftDif.X, boundsOfWindow.Top + topLeftDif.Y, 0, 0, b); // копируем изображение с экрана
-                    //g1.Dispose(); // удаляем средство рисования
-                }
-
-                try { Stream.SendToServ(bitmap); } // отправляем на сервер
-                catch (WebException)
-                {
-                    if (MsgBoxIsDisplayed == false)
+                    try { Stream.SendToServ(bitmap); } // отправляем на сервер
+                    catch (WebException)
                     {
-                        MsgBoxIsDisplayed = true;
-                        if (MessageBox.Show("Ошибка при подключении к серверу. Трансляция остановлена", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning) == DialogResult.OK)
+                        if (MsgBoxIsDisplayed == false)
                         {
-                            MsgBoxIsDisplayed = false;
-
-                            Form2.StreamIsRunning = false;
+                            MsgBoxIsDisplayed = true;
+                            if (MessageBox.Show("Ошибка при подключении к серверу. Трансляция остановлена", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning) == DialogResult.OK)
+                            {
+                                MsgBoxIsDisplayed = false;
+                            }
                         }
+                        Stream.Stop();
                     }
-                    Stream.Stop();
                 }
             }
         }

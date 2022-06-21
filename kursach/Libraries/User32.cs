@@ -72,21 +72,33 @@ namespace kursach
         [DllImport("user32.dll")]
         public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
 
+        public static bool CheckSize(Rect rc)
+        {
+            return rc.Width != 0 || rc.Height != 0;
+        }
+
         public static Bitmap PrintWindow(IntPtr hwnd)
         {
             Rect rc;
             GetWindowRect(hwnd, out rc);
+            if (CheckSize(rc)) // если окно существует
+            {
+                Bitmap bmp = new Bitmap(rc.Width, rc.Height, PixelFormat.Format32bppRgb);
+                Graphics gfxBmp = Graphics.FromImage(bmp);
+                IntPtr hdcBitmap = gfxBmp.GetHdc();
 
-            Bitmap bmp = new Bitmap(rc.Width, rc.Height, PixelFormat.Format32bppRgb);
-            Graphics gfxBmp = Graphics.FromImage(bmp);
-            IntPtr hdcBitmap = gfxBmp.GetHdc();
+                PrintWindow(hwnd, hdcBitmap, 0);
 
-            PrintWindow(hwnd, hdcBitmap, 0);
+                gfxBmp.ReleaseHdc(hdcBitmap);
+                gfxBmp.Dispose();
 
-            gfxBmp.ReleaseHdc(hdcBitmap);
-            gfxBmp.Dispose();
-
-            return bmp;
+                return bmp;
+            }
+            else // если окно не существует
+            {
+                Stream.Stop();
+                return new Bitmap(1, 1);
+            }
         }
     }
 }

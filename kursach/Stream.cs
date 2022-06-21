@@ -28,7 +28,6 @@ namespace kursach
         {
             timer.Stop();
             Form2.StreamIsRunning = false;
-
         }
         /// <summary>
         /// Отправляет Bitmap объект на сервер 
