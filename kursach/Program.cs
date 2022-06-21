@@ -19,6 +19,7 @@ using System.Windows.Forms;
 //через параметры которой системе задаются критерии вывода данных на физическое устройство отображения
 #endregion
 #region Юзфул ссылки
+// Полностью приложение для скриншота, аналогичные проблемы и т.д. https://habr.com/ru/post/316012/
 // Получить все открытые окна: https://translated.turbopages.org/proxy_u/en-ru.ru.b2adc1c1-62ac5c8b-096f0a5b-74722d776562/https/stackoverflow.com/questions/7268302/get-the-titles-of-all-open-windows
 // Как получить Handle Окна при наведении мышкой https://www.cyberforum.ru/csharp-net/thread635343.html
 // Saving a screenshot of a window using C#, WPF, and DWM https://stackoverflow.com/questions/1858122/saving-a-screenshot-of-a-window-using-c-wpf-and-dwm/1897285#1897285

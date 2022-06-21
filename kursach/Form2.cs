@@ -19,18 +19,53 @@ namespace kursach
         public static bool StreamIsRunning { get; set; } // Проверка на то идет ли стрим
         public static bool CaptureFullScreen { get; set; } = false; // Выбор захватывать весь экран или область
 
+        // winapi для вывода окна
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
+        // winapi для вывода окна на передний план
         [DllImport("USER32.DLL")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        IntPtr hwd;
-        int selected_index;
-        string selected_name;
-        Process selected_process;
+        #region -- Получение статуса окна (свернуто, обычное, максимизирвоанное) --
 
-        delegate void WindowProc(IntPtr hWnd, IntPtr lParam);
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+
+        [Serializable]
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct WINDOWPLACEMENT
+        {
+            public int length;
+            public int flags;
+            public ShowWindowCommands showCmd;
+            public System.Drawing.Point ptMinPosition;
+            public System.Drawing.Point ptMaxPosition;
+            public System.Drawing.Rectangle rcNormalPosition;
+        }
+
+        internal enum ShowWindowCommands : int
+        {
+            Hide = 0,
+            Normal = 1,
+            Minimized = 2,
+            Maximized = 3,
+        }
+        private static WINDOWPLACEMENT GetPlacement(IntPtr hwnd)
+        {
+            WINDOWPLACEMENT placement = new WINDOWPLACEMENT();
+            placement.length = Marshal.SizeOf(placement);
+            GetWindowPlacement(hwnd, ref placement);
+            return placement;
+        }
+        #endregion
+
+        // Переменные для работы логики формы
+        private IntPtr hwd;
+        private int selected_index;
+        private string selected_name;
+        private Process selected_process;
 
         public Form2()
         {
@@ -97,8 +132,12 @@ namespace kursach
                 {
                     hwd = selected_process.MainWindowHandle;
 
-                    //ShowWindow(hwd, 4); // выводит выбранное окно
-                    //SetForegroundWindow(hwd); // на передний план
+                    var selectedWindowPlacement = GetPlacement(selected_process.MainWindowHandle).showCmd.ToString();
+
+                    if (selectedWindowPlacement == "Minimized" || selectedWindowPlacement == "Hide")
+                    {
+                        ShowWindow(hwd, 4); // выводит выбранное окно
+                    }
                     //Thread.Sleep(250); // Пауза перед скрином, чтобы окно открылось
 
                     customButton1.Visible = true; // появляется кнопка остановки стрима

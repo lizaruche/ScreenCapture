@@ -36,7 +36,7 @@ namespace kursach
         public static void SendToServ(Bitmap img)
         { 
 
-            WebRequest request = WebRequest.Create("http://127.0.0.1:5000/base64_img"); // сохдание объекта запроса
+            WebRequest request = WebRequest.Create("http://80.249.151.229:8080/base64_img"); // сохдание объекта запроса
             request.ContentType = "application/json"; // тип контента в запросе
             request.Method = "POST"; // метод запроса
 

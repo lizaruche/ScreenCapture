@@ -7,7 +7,7 @@ namespace kursach
 {
     class FrameTimer : Timer
     {
-        private static Rect boundsOfWindow;
+        private static Rectangle boundsOfWindow;
         private static Point topLeftDif;
         private static Size botRightDif;
         private static IntPtr hwd;
@@ -16,7 +16,10 @@ namespace kursach
         
         protected override void OnTick(EventArgs e)
         {
-            User32.GetWindowRect(hwd, out boundsOfWindow); // трэчит размер окна
+            User32.Rect boundsOfWindow_rect;
+            User32.GetWindowRect(hwd, out boundsOfWindow_rect); // трэчит размер окна
+            boundsOfWindow = User32.RectToRectangle(boundsOfWindow_rect); // Перевод из Rect в Rectangle
+
             if (boundsOfWindow.Width == 0 && boundsOfWindow.Height == 0) // если размер (0;0) - окно закрыто
             {
                 Stream.Stop();
@@ -25,13 +28,21 @@ namespace kursach
             {
                 int windowWidth = boundsOfWindow.Width; // ширина окна
                 int windowHeight = boundsOfWindow.Height; // высота окна
-                Size windowSize = new Size(windowWidth - botRightDif.Width, windowHeight - botRightDif.Height); // трэчит размеры окна
 
-                if (windowSize.Width > 0 && windowSize.Height > 0 || Form2.CaptureFullScreen)
+                Size selectedRectangleSize = new Size(SelectedRectangle.Width,SelectedRectangle.Height); // трэчит размеры окна
+                
+                if (selectedRectangleSize.Width > 0 && selectedRectangleSize.Height > 0 || Form2.CaptureFullScreen)
                 {
                     Bitmap bitmap;
-
-                    bitmap = User32.PrintWindow(hwd); // формируем объект 
+                    if (Form2.CaptureFullScreen)
+                    {
+                        bitmap = User32.PrintWindow(hwd); // формируем объект 
+                    }
+                    else
+                    {
+                        bitmap = User32.PrintWindow(hwd, new Rectangle(topLeftDif,selectedRectangleSize));
+                    }
+                        
 
                     try { Stream.SendToServ(bitmap); } // отправляем на сервер
                     catch (WebException)
@@ -52,8 +63,9 @@ namespace kursach
         public static void SelectedRect(IntPtr hwd)
         {
             FrameTimer.hwd = hwd;
-
-            User32.GetWindowRect(hwd, out boundsOfWindow); // достает размеры окна
+            User32.Rect boundsOfWindow_rect;
+            User32.GetWindowRect(hwd, out boundsOfWindow_rect); // достает размеры окна
+            boundsOfWindow = User32.RectToRectangle(boundsOfWindow_rect); // Перевод из Rect в Rectangle
 
             topLeftDif = new Point(SelectedRectangle.X - boundsOfWindow.Left, SelectedRectangle.Y - boundsOfWindow.Top); // разница левого верхнего угла 
 

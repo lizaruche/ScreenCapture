@@ -15,6 +15,18 @@ namespace kursach
 
         #region -- Свойства -- 
 
+        private Font font = new Font("Verdana", 13F, FontStyle.Bold);
+        [Description("Шрифт")]
+        public Font NewFont
+        {
+            get => font;
+            set
+            {
+                font = value;
+                Refresh();
+            }
+        }
+
         private Color backColor = Color.FromArgb(240, 147, 43); // оранжевый цвет
         [Description("Цвет фона")]
         public Color NewBackColor
@@ -178,9 +190,8 @@ namespace kursach
             Rectangle curtainRect = new Rectangle(0, 0, (int)CurtainButtonAnim.Value, Height - 1);
 
             // Настройка текста
-            Font = new Font("Verdana", 13F, FontStyle.Bold);
             ForeColor = Color.White;
-
+            Font = NewFont;
 
             //Закругление
             float roundingValue = 0.1F;

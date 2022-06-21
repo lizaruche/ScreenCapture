@@ -12,35 +12,57 @@ namespace kursach
 {
     public partial class Form1 : Form
     {
-        Point original; // локация точки, при нажатии мышью
+        public Point original; // локация точки, при нажатии мышью
         public static Rectangle SelectedRectangle; // выбранная пользователем область 
         public IntPtr Hwd; // выбранное пользователем окно
         public Form1(IntPtr hwd) // форма для выбора области
         {
             Hwd = hwd;
             InitializeComponent();
-
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
 
-            new Button { Text = "Закрыть", Parent = this }.Click += (o, e) =>
-            {
-                this.Close();
-                Stream.Stop();
-            };
-            this.FormBorderStyle = FormBorderStyle.Fixed3D;
+            this.FormBorderStyle = FormBorderStyle;
             TopMost = true;
             ShowInTaskbar = false;
             WindowState = FormWindowState.Maximized;
             BackgroundImage = Shoot();
+            new CustomButton { Text = "Закрыть", Parent = this,NewFont = new Font("Verdana",8,FontStyle.Regular), Location = original,BorderColorEnabled = true,BorderColor=Color.White,BorderSize = 1,Size = new Size(100,20), NewBackColor = Color.FromArgb(230,0,0,0), ForeColor = Color.White}.Click += (o, e) =>
+            {
+                this.Close();
+                Cursor.Clip = Rectangle.Empty;
+                Stream.Stop();
+            };
         }
         private Bitmap Shoot() // для бэкграунда формы
         {
-            Rect bounds = default;
-            User32.GetWindowRect(Hwd, out bounds);
-            var bmp = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
-            using (var gr = Graphics.FromImage(bmp))
-                gr.CopyFromScreen(bounds.Left, bounds.Top, bounds.Left, bounds.Top, new Size(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top));
-            return bmp;
+            Rectangle bounds = default;
+
+            User32.Rect bounds_rect = default;
+            User32.GetWindowRect(Hwd, out bounds_rect);
+            bounds = User32.RectToRectangle(bounds_rect);
+
+            original = new Point(bounds.Left, bounds.Top); // Левый верхний угол
+            Cursor.Position = original; // перемещение курсора в левый верхний угол
+
+            Bitmap bmp = User32.PrintWindow(Hwd); // bmp - изображение приложения
+
+            var bmpFullScreen = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height); // изображение всего экрана
+
+            using(var gr = Graphics.FromImage(bmpFullScreen)) 
+                gr.DrawImage(bmp, original.X, original.Y); // перенос скрина приложения на пустое изображение экрана
+
+            Cursor.Clip = new Rectangle(bounds.Left,bounds.Top,bounds.Width,bounds.Height); // ограничение для перемещения курсора
+
+            return bmpFullScreen;
+        }
+        protected virtual void OnMouseEnter(object sender, EventArgs e)
+        {
+            base.OnMouseEnter(e);
+        }
+
+        protected virtual void OnMouseLeave(object sender, EventArgs e)
+        {
+            base.OnMouseLeave(e);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -56,6 +78,7 @@ namespace kursach
                 SelectedRectangle.Size = Size.Empty;
                 Invalidate();
             }
+            Cursor.Clip = Rectangle.Empty;
             this.Close();
         }
 
