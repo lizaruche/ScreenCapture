@@ -15,7 +15,7 @@ namespace kursach
 {
     public partial class Form2 : Form
     {
-        Dictionary<HWND, string> WindowsList = new Dictionary<HWND, string> (); // Список всех открытых окон
+        List<Process> WindowsList = new List<Process>(); // Список всех открытых окон
         public static bool StreamIsRunning { get; set; } // Проверка на то идет ли стрим
         public static bool CaptureFullScreen { get; set; } = false; // Выбор захватывать весь экран или область
 
@@ -28,7 +28,7 @@ namespace kursach
         IntPtr hwd;
         int selected_index;
         string selected_name;
-        IntPtr selected_process;
+        Process selected_process;
         KeyValuePair<HWND, string> keyValuePair;
 
         public Form2()
@@ -38,26 +38,29 @@ namespace kursach
 
             Animator.Start();
 
-            //WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "").ToList();
+            RefreshCombobox();
 
-            WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "").ToDictionary(x => x.MainWindowHandle, x => x.MainWindowTitle);
-
-            customComboBox1.DisplayMember = "Value";
-            customComboBox1.ValueMember = "Key";
-            customComboBox1.DataSource = new BindingSource(WindowsList, null);
         }
         
+        private void RefreshCombobox()
+        {
+            WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "").ToList();
+            //WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "").ToDictionary(x => x.MainWindowHandle, x => x.MainWindowTitle);
+            
+            customComboBox1.Items.Clear();
+            foreach(var item in WindowsList)
+            {
+                customComboBox1.Items.Add(item.MainWindowTitle);
+            }
+            //customComboBox1.DisplayMember = "Value";
+            //customComboBox1.ValueMember = "Key";
+            //customComboBox1.DataSource = new BindingSource(WindowsList, null);
+
+        }
+
         private void timer_Tick(object sender, EventArgs e)
         {
-            //WindowsList = OpenWindowGetter.GetOpenWindows();
-
-            WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "").ToDictionary(x => x.MainWindowHandle, x => x.MainWindowTitle);
-
-            //WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "");
-
-            customComboBox1.DisplayMember = "Value";
-            customComboBox1.ValueMember = "Key";
-            customComboBox1.DataSource = new BindingSource(WindowsList, null);
+            RefreshCombobox();
 
             if (!StreamIsRunning)
             {
@@ -84,9 +87,8 @@ namespace kursach
             if(customComboBox1.SelectedIndex != -1)
             {
                 selected_index = customComboBox1.SelectedIndex;
-                keyValuePair = (KeyValuePair<HWND,string>)customComboBox1.Items[selected_index];
-                selected_process = keyValuePair.Key;
-                selected_name = keyValuePair.Value;
+                selected_process = WindowsList.Where(x => x.MainWindowTitle == customComboBox1.SelectedItem.ToString()).FirstOrDefault();
+                selected_name = customComboBox1.SelectedItem.ToString();
             }
         }
 
@@ -98,11 +100,10 @@ namespace kursach
             }
             else
             {
-                if (customComboBox1.Items.Contains(keyValuePair))
+                if (customComboBox1.Items.Contains(selected_name))
                 {
                     //hwd = WindowsList.Where(x => x.MainWindowTitle == selected_name).FirstOrDefault().MainWindowHandle; ; // берет индекс выбранного элемента и по ключу находит его в списке окон
-                    hwd = WindowsList.Where(x => x.Value == selected_name).FirstOrDefault().Key;
-
+                    hwd = selected_process.MainWindowHandle;
 
                     ShowWindow(hwd, 4); // выводит выбранное окно
                     SetForegroundWindow(hwd); // на передний план
