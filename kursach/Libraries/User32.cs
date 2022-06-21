@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace kursach
 {
@@ -8,10 +10,40 @@ namespace kursach
     [StructLayout(LayoutKind.Sequential)]
     public struct Rect
     {
-        public int Left;
-        public int Top;
-        public int Right;
-        public int Bottom;
+        private int left;
+        private int top;
+        private int right;
+        private int bottom;
+        public int Left
+        {
+            get { return left; }
+            set { left = value; }
+        }
+        public int Top
+        {
+            get { return top; }
+            set { top = value; }
+        }
+        public int Right
+        {
+            get { return right; }
+            set { right = value; }
+        }
+        public int Bottom
+        {
+            get { return bottom; }
+            set { bottom = value; }
+        }
+        public int Height
+        {
+            get { return bottom - top; }
+            set { bottom = value + top; }
+        }
+        public int Width
+        {
+            get { return right - left; }
+            set { right = value + left; }
+        }
     }
     public class User32
     {
@@ -21,7 +53,7 @@ namespace kursach
         public static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle); // создает Rect-прямоугольник на основе окна 
+        public static extern bool GetWindowRect(IntPtr hwnd, out Rect rectangle); // создает Rect-прямоугольник на основе окна 
         
         [DllImport("USER32.DLL")]
         public static extern bool EnumWindows(EnumWindowsProc enumFunc, int lParam);
@@ -37,5 +69,24 @@ namespace kursach
 
         [DllImport("USER32.DLL")]
         public static extern IntPtr GetShellWindow();
+        [DllImport("user32.dll")]
+        public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
+
+        public static Bitmap PrintWindow(IntPtr hwnd)
+        {
+            Rect rc;
+            GetWindowRect(hwnd, out rc);
+
+            Bitmap bmp = new Bitmap(rc.Width, rc.Height, PixelFormat.Format32bppRgb);
+            Graphics gfxBmp = Graphics.FromImage(bmp);
+            IntPtr hdcBitmap = gfxBmp.GetHdc();
+
+            PrintWindow(hwnd, hdcBitmap, 0);
+
+            gfxBmp.ReleaseHdc(hdcBitmap);
+            gfxBmp.Dispose();
+
+            return bmp;
+        }
     }
 }

@@ -22,7 +22,11 @@ namespace kursach
 
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
 
-            new Button { Text = "Закрыть", Parent = this }.Click += (o, e) => Application.Exit();
+            new Button { Text = "Закрыть", Parent = this }.Click += (o, e) =>
+            {
+                this.Close();
+                Stream.Stop();
+            };
             this.FormBorderStyle = FormBorderStyle.None;
             TopMost = true;
             ShowInTaskbar = false;
@@ -32,7 +36,7 @@ namespace kursach
         private Bitmap Shoot() // для бэкграунда формы
         {
             Rect bounds = default;
-            User32.GetWindowRect(Hwd, ref bounds);
+            User32.GetWindowRect(Hwd, out bounds);
             var bmp = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             using (var gr = Graphics.FromImage(bmp))
                 gr.CopyFromScreen(bounds.Left, bounds.Top, bounds.Left, bounds.Top, new Size(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top));

@@ -16,9 +16,9 @@ namespace kursach
         
         protected override void OnTick(EventArgs e)
         {
-            User32.GetWindowRect(hwd, ref boundsOfWindow); // трэчит размер окна
-            int windowWidth = boundsOfWindow.Right - boundsOfWindow.Left; // ширина окна
-            int windowHeight = boundsOfWindow.Bottom - boundsOfWindow.Top; // высота окна
+            User32.GetWindowRect(hwd, out boundsOfWindow); // трэчит размер окна
+            int windowWidth = boundsOfWindow.Width; // ширина окна
+            int windowHeight = boundsOfWindow.Height; // высота окна
             Size b = new Size(windowWidth - botRightDif.Width, windowHeight - botRightDif.Height); // трэчит размеры окна
             Size windowSize = new Size(windowWidth, windowHeight); // берет размеры окна
 
@@ -28,17 +28,21 @@ namespace kursach
 
                 if (Form2.CaptureFullScreen)
                 {
-                    bitmap = new Bitmap(windowSize.Width, windowSize.Height); // формируем объект 
-                    Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
-                    g1.CopyFromScreen(boundsOfWindow.Left, boundsOfWindow.Top, 0, 0,windowSize);
-                    g1.Dispose(); // удаляем средство рисования
+                    bitmap = User32.PrintWindow(hwd); // формируем объект 
+
+                    //bitmap = new Bitmap(windowSize.Width, windowSize.Height); // формируем объект 
+                    //Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
+                    //g1.CopyFromScreen(boundsOfWindow.Left, boundsOfWindow.Top, 0, 0, windowSize);
+                    //g1.Dispose(); // удаляем средство рисования
                 }
                 else
                 {
-                    bitmap = new Bitmap(b.Width, b.Height); // формируем объект 
-                    Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
-                    g1.CopyFromScreen(boundsOfWindow.Left + topLeftDif.X, boundsOfWindow.Top + topLeftDif.Y, 0, 0, b); // копируем изображение с экрана
-                    g1.Dispose(); // удаляем средство рисования
+                    bitmap = User32.PrintWindow(hwd); // формируем объект 
+
+                    //bitmap = new Bitmap(b.Width, b.Height); // формируем объект 
+                    //Graphics g1 = Graphics.FromImage(bitmap); // формируем поверхность для рисования на объекте Bitmap
+                    //g1.CopyFromScreen(boundsOfWindow.Left + topLeftDif.X, boundsOfWindow.Top + topLeftDif.Y, 0, 0, b); // копируем изображение с экрана
+                    //g1.Dispose(); // удаляем средство рисования
                 }
 
                 try { Stream.SendToServ(bitmap); } // отправляем на сервер
@@ -62,7 +66,7 @@ namespace kursach
         {
             FrameTimer.hwd = hwd;
 
-            User32.GetWindowRect(hwd, ref boundsOfWindow); // достает размеры окна
+            User32.GetWindowRect(hwd, out boundsOfWindow); // достает размеры окна
 
             topLeftDif = new Point(SelectedRectangle.X - boundsOfWindow.Left, SelectedRectangle.Y - boundsOfWindow.Top); // разница левого верхнего угла 
 

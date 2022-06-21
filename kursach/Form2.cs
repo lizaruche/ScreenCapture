@@ -15,9 +15,7 @@ namespace kursach
 {
     public partial class Form2 : Form
     {
-        
-        IDictionary<IntPtr, string> WindowsList = new Dictionary<IntPtr, string>(); // Список всех открытых окон
-
+        Dictionary<HWND, string> WindowsList = new Dictionary<HWND, string> (); // Список всех открытых окон
         public static bool StreamIsRunning { get; set; } // Проверка на то идет ли стрим
         public static bool CaptureFullScreen { get; set; } = false; // Выбор захватывать весь экран или область
 
@@ -30,26 +28,36 @@ namespace kursach
         IntPtr hwd;
         int selected_index;
         string selected_name;
+        IntPtr selected_process;
+        KeyValuePair<HWND, string> keyValuePair;
+
         public Form2()
         {
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             InitializeComponent();
 
             Animator.Start();
-        }
 
+            //WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "").ToList();
+
+            WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "").ToDictionary(x => x.MainWindowHandle, x => x.MainWindowTitle);
+
+            customComboBox1.DisplayMember = "Value";
+            customComboBox1.ValueMember = "Key";
+            customComboBox1.DataSource = new BindingSource(WindowsList, null);
+        }
+        
         private void timer_Tick(object sender, EventArgs e)
         {
-            customComboBox1.Items.Clear();
-            WindowsList = OpenWindowGetter.GetOpenWindows();
+            //WindowsList = OpenWindowGetter.GetOpenWindows();
 
-            //var openWindowProcesses = System.Diagnostics.Process.GetProcesses().Where(p => p.MainWindowHandle != IntPtr.Zero && p.ProcessName != "explorer");
-            //openWindowProcesses.
+            WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "").ToDictionary(x => x.MainWindowHandle, x => x.MainWindowTitle);
 
-            foreach (var item in WindowsList)
-            {
-                customComboBox1.Items.Add(item.Value.ToString());
-            }
+            //WindowsList = Process.GetProcesses().Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle != "");
+
+            customComboBox1.DisplayMember = "Value";
+            customComboBox1.ValueMember = "Key";
+            customComboBox1.DataSource = new BindingSource(WindowsList, null);
 
             if (!StreamIsRunning)
             {
@@ -73,8 +81,13 @@ namespace kursach
 
         private void customComboBox1_OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            selected_index = customComboBox1.SelectedIndex;
-            selected_name = customComboBox1.Items[selected_index].ToString();
+            if(customComboBox1.SelectedIndex != -1)
+            {
+                selected_index = customComboBox1.SelectedIndex;
+                keyValuePair = (KeyValuePair<HWND,string>)customComboBox1.Items[selected_index];
+                selected_process = keyValuePair.Key;
+                selected_name = keyValuePair.Value;
+            }
         }
 
         private void customButton2_Click_1(object sender, EventArgs e) // Включить стрим
@@ -85,11 +98,14 @@ namespace kursach
             }
             else
             {
-                if (WindowsList.Values.Contains(selected_name))
+                if (customComboBox1.Items.Contains(keyValuePair))
                 {
-                    hwd = WindowsList.ToArray()[selected_index].Key; // берет индекс выбранного элемента и по ключу находит его в списке окон
-                    ShowWindow(WindowsList.ToArray()[selected_index].Key, 4); // выводит выбранное окно
-                    SetForegroundWindow(WindowsList.ToArray()[selected_index].Key); // на передний план
+                    //hwd = WindowsList.Where(x => x.MainWindowTitle == selected_name).FirstOrDefault().MainWindowHandle; ; // берет индекс выбранного элемента и по ключу находит его в списке окон
+                    hwd = WindowsList.Where(x => x.Value == selected_name).FirstOrDefault().Key;
+
+
+                    ShowWindow(hwd, 4); // выводит выбранное окно
+                    SetForegroundWindow(hwd); // на передний план
 
                     Thread.Sleep(250); // Пауза перед скрином, чтобы окно открылось
 
