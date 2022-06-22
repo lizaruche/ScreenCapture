@@ -173,7 +173,10 @@ namespace kursach
             DialogResult res = new DialogResult();
             res = MessageBox.Show("Вы действительно хотите выйти?", "Выход из программы", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (res == DialogResult.Yes)
+            {
+                Stream.Stop();
                 Close();
+            }   
             else
                 return;
         }
