@@ -28,6 +28,7 @@ namespace kursach
         {
             timer.Stop();
             Form2.StreamIsRunning = false;
+            ClearFrames();
         }
         /// <summary>
         /// Отправляет Bitmap объект на сервер 
@@ -49,6 +50,17 @@ namespace kursach
                 streamWriter.Flush(); // чистка буферов средства записи
                 streamWriter.Close(); // закрытие потока
             }
+
+            WebResponse response = request.GetResponse(); // возвращает ответ на запрос 
+            using (StreamReader streamReader = new StreamReader(response.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd(); // сохраняем ответ на запрос в переменную result
+            }
+        }
+        private static void ClearFrames()
+        {
+            WebRequest request = WebRequest.Create("http://80.249.151.229:8080/clear_frames"); // сохдание объекта запроса
+            request.Method = "GET"; // метод запроса
 
             WebResponse response = request.GetResponse(); // возвращает ответ на запрос 
             using (StreamReader streamReader = new StreamReader(response.GetResponseStream()))
