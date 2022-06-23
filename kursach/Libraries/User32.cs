@@ -48,6 +48,16 @@ namespace kursach
         }
 
         public delegate bool EnumWindowsProc(IntPtr hWnd, int lParam);
+        // winapi для вывода окна
+        [DllImport("user32.dll")]
+        public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        // winapi для вывода окна на передний план
+        [DllImport("USER32.DLL")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         [DllImport("user32.dll", EntryPoint = "GetForegroundWindow")]
         public static extern IntPtr GetForegroundWindow();

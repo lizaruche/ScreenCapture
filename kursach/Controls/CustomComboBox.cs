@@ -107,11 +107,11 @@ namespace kursach
             // Открывает выпадающий список
             cmbList.Select();
             cmbList.DroppedDown = true;
-            Form2.RefreshWindowsList(); // обновление списка по клику
+            Form3.RefreshWindowsList(); // обновление списка по клику
             Items.Clear();
-            foreach(var item in Form2.WindowsList)
+            foreach(var item in Form3.windowsList)
             {
-                Items.Add(item.MainWindowTitle);
+                Items.Add(item.Value);
             }
         }
 

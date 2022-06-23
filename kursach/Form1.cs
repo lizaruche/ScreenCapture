@@ -36,7 +36,7 @@ namespace kursach
         private Bitmap Shoot() // для бэкграунда формы
         {
             Rectangle bounds = default;
-
+            
             User32.Rect bounds_rect = default;
             User32.GetWindowRect(Hwd, out bounds_rect);
             bounds = User32.RectToRectangle(bounds_rect);
