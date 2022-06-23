@@ -26,9 +26,6 @@ namespace kursach
             }
             else
             {
-                int windowWidth = boundsOfWindow.Width; // ширина окна
-                int windowHeight = boundsOfWindow.Height; // высота окна
-
                 Size selectedRectangleSize = new Size(SelectedRectangle.Width,SelectedRectangle.Height); // трэчит размеры окна
                 
                 if (selectedRectangleSize.Width > 0 && selectedRectangleSize.Height > 0 || Form2.CaptureFullScreen)
@@ -36,11 +33,11 @@ namespace kursach
                     Bitmap bitmap;
                     if (Form2.CaptureFullScreen)
                     {
-                        bitmap = User32.PrintWindow(hwd); // формируем объект 
+                        bitmap = Stream.PrintWindow(hwd, boundsOfWindow); // формируем объект 
                     }
                     else
                     {
-                        bitmap = User32.PrintWindow(hwd, new Rectangle(topLeftDif,selectedRectangleSize));
+                        bitmap = Stream.PrintWindow(hwd, new Rectangle(topLeftDif,selectedRectangleSize), false);
                     }
                         
 

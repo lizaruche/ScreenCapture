@@ -91,7 +91,6 @@
     <Compile Include="FrameTimer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="OpenWindowGetter.cs" />
     <Compile Include="Stream.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

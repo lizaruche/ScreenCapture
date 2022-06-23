@@ -44,7 +44,7 @@ namespace kursach
             original = new Point(bounds.Left, bounds.Top); // Левый верхний угол
             Cursor.Position = original; // перемещение курсора в левый верхний угол
 
-            Bitmap bmp = User32.PrintWindow(Hwd); // bmp - изображение приложения
+            Bitmap bmp = Stream.PrintWindow(Hwd, bounds); // bmp - изображение приложения
 
             var bmpFullScreen = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height); // изображение всего экрана
 
