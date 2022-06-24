@@ -90,30 +90,23 @@ namespace kursach
             
             if (User32.CheckSize(rc)) // если окно существует
             {
+                newBitmap = new Bitmap(rectangle.Width, rectangle.Height);
+                Graphics gfxBmp = Graphics.FromImage(newBitmap);
+                IntPtr hdcBitmap = gfxBmp.GetHdc();
+
+                User32.PrintWindow(hwnd, hdcBitmap, 0);
+
+                gfxBmp.ReleaseHdc(hdcBitmap);
+                gfxBmp.Dispose();
+
                 if (fullWindow)
                 {
-                    newBitmap = new Bitmap(rectangle.Width, rectangle.Height);
-                    Graphics gfxBmp = Graphics.FromImage(newBitmap);
-                    IntPtr hdcBitmap = gfxBmp.GetHdc();
-
-                    User32.PrintWindow(hwnd, hdcBitmap, 0);
-
-                    gfxBmp.ReleaseHdc(hdcBitmap);
-                    gfxBmp.Dispose();
-
                     return newBitmap;
                 }
                 else
                 {
                     Bitmap bmp = new Bitmap(rectangle.Width, rectangle.Height);
-                    Graphics gfxBmp = Graphics.FromImage(bmp);
-                    IntPtr hdcBitmap = gfxBmp.GetHdc();
-
-                    User32.PrintWindow(hwnd, hdcBitmap, 0);
-
-                    gfxBmp.ReleaseHdc(hdcBitmap);
-                    gfxBmp.Dispose();
-
+                    
                     if (bmp.Width <= rc.X || bmp.Height <= rc.Y) // левый угол правее или ниже окна
                     {
                         return new Bitmap(1, 1);
@@ -123,6 +116,35 @@ namespace kursach
                         rc.Width = bmp.Width - rc.X;
                         rc.Height = bmp.Height - rc.Y;
                         newBitmap = bmp.Clone(rc, bmp.PixelFormat);
+                    }
+                    else if(rc.Y < 0 || rc.X < 0) // выделено вне приложения сверху или слева (рамка)
+                    {
+                        if(rc.Y < 0)
+                        {
+                            if(rc.Height <= Math.Abs(rc.Y))
+                            {
+                                Stream.Stop();
+                            }
+                            else
+                            {
+                                rc.Height -= Math.Abs(rc.Y);
+                            }
+                            rc.Y = 0;
+                        }
+
+                        if(rc.X < 0)
+                        {
+                            if (rc.Width <= Math.Abs(rc.X))
+                            {
+                                Stream.Stop();
+                            }
+                            else
+                            {
+                                rc.Width -= Math.Abs(rc.X);
+                            }
+                            rc.X = 0;
+                        }
+                        newBitmap = bmp.Clone(rc, bmp.PixelFormat); // вырезание нужной области из bitmap
                     }
                     else // выделенная область полностью помещается в окно
                     {
