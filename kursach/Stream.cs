@@ -90,23 +90,30 @@ namespace kursach
             
             if (User32.CheckSize(rc)) // если окно существует
             {
-                newBitmap = new Bitmap(rectangle.Width, rectangle.Height);
-                Graphics gfxBmp = Graphics.FromImage(newBitmap);
-                IntPtr hdcBitmap = gfxBmp.GetHdc();
-
-                User32.PrintWindow(hwnd, hdcBitmap, 0);
-
-                gfxBmp.ReleaseHdc(hdcBitmap);
-                gfxBmp.Dispose();
-
                 if (fullWindow)
                 {
+                    newBitmap = new Bitmap(rectangle.Width, rectangle.Height);
+                    Graphics gfxBmp = Graphics.FromImage(newBitmap);
+                    IntPtr hdcBitmap = gfxBmp.GetHdc();
+
+                    User32.PrintWindow(hwnd, hdcBitmap, 0);
+
+                    gfxBmp.ReleaseHdc(hdcBitmap);
+                    gfxBmp.Dispose();
                     return newBitmap;
                 }
                 else
                 {
                     Bitmap bmp = new Bitmap(rectangle.Width, rectangle.Height);
-                    
+
+                    Graphics gfxBmp = Graphics.FromImage(bmp);
+                    IntPtr hdcBitmap = gfxBmp.GetHdc();
+
+                    User32.PrintWindow(hwnd, hdcBitmap, 0);
+
+                    gfxBmp.ReleaseHdc(hdcBitmap);
+                    gfxBmp.Dispose();
+
                     if (bmp.Width <= rc.X || bmp.Height <= rc.Y) // левый угол правее или ниже окна
                     {
                         return new Bitmap(1, 1);
