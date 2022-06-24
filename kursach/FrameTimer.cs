@@ -22,6 +22,15 @@ namespace kursach
 
             if (boundsOfWindow.Width == 0 && boundsOfWindow.Height == 0) // если размер (0;0) - окно закрыто
             {
+                if (MsgBoxIsDisplayed == false)
+                {
+                    MsgBoxIsDisplayed = true;
+                    if (MessageBox.Show("Окна больше не существует. Трансляция остановлена", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning) == DialogResult.OK)
+                    {
+                        MsgBoxIsDisplayed = false;
+                    }
+                }
+                
                 Stream.Stop();
             }
             else
@@ -41,7 +50,12 @@ namespace kursach
                     }
                         
 
-                    try { Stream.SendToServ(bitmap); } // отправляем на сервер
+                    try 
+                    {
+                        // отправляем на сервер
+                        Stream.SendToServ(bitmap);
+                        //Form2.CreatePictureBox(bitmap);
+                    } 
                     catch (WebException)
                     {
                         if (MsgBoxIsDisplayed == false)

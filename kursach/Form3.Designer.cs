@@ -32,6 +32,7 @@
             this.customButton2 = new kursach.CustomButton();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // customButton1
@@ -90,20 +91,37 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Выберите приложение для демонстрации";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label2.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(597, 13);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(20, 18);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "X";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
+            // 
             // Form3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(634, 529);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.customButton2);
             this.Controls.Add(this.customButton1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Form3";
             this.Padding = new System.Windows.Forms.Padding(25, 25, 0, 0);
             this.Text = "Выбор приложения";
             this.Load += new System.EventHandler(this.Form3_Load);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form3_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form3_MouseMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -115,5 +133,6 @@
         private CustomButton customButton2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

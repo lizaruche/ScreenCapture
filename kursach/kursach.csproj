@@ -87,7 +87,10 @@
     <Compile Include="Controls\CustomToggleSwitch.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Drawer.cs" />
+    <Compile Include="Controls\PicExt.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Animation\Drawer.cs" />
     <Compile Include="Form3.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,9 +120,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\CustomComboBox.cs">
-      <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

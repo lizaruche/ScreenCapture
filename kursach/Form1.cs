@@ -15,6 +15,8 @@ namespace kursach
         public Point original; // локация точки, при нажатии мышью
         public static Rectangle SelectedRectangle; // выбранная пользователем область 
         public IntPtr Hwd; // выбранное пользователем окно
+        public Point realCorner; // Запоминает положение окна, если оно на другом мониторе
+        public bool isOnOtherDesktop;
         public Form1(IntPtr hwd) // форма для выбора области
         {
             Hwd = hwd;
@@ -40,19 +42,29 @@ namespace kursach
             User32.Rect bounds_rect = default;
             User32.GetWindowRect(Hwd, out bounds_rect);
             bounds = User32.RectToRectangle(bounds_rect);
-
-            original = new Point(bounds.Left, bounds.Top); // Левый верхний угол
-            Cursor.Position = original; // перемещение курсора в левый верхний угол
-
+            isOnOtherDesktop = bounds.X < 0 || bounds.X > System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width || bounds.Y < 0 || bounds.Y > System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height || bounds.Y + bounds.Height > System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Height || bounds.X + bounds.Width > System.Windows.Forms.SystemInformation.PrimaryMonitorSize.Width;
+            // Если приложение не на основном мониторе
+            if (isOnOtherDesktop)
+            {
+                original = new Point(0, 0); // Будем строить изображение в левом верхнем углу
+                Cursor.Position = original; // перемещение курсора в левый верхний угол
+                Cursor.Clip = new Rectangle(0, 0, bounds.Width, bounds.Height); // ограничение для перемещения курсора
+                realCorner = new Point(bounds.Left, bounds.Top);
+            }
+            else // Если на основном
+            {
+                original = new Point(bounds.Left, bounds.Top); // Левый верхний угол окна
+                realCorner = original;
+                Cursor.Position = original; // перемещение курсора в левый верхний угол
+                Cursor.Clip = new Rectangle(bounds.Left, bounds.Top, bounds.Width, bounds.Height); // ограничение для перемещения курсора
+            }
+            
             Bitmap bmp = Stream.PrintWindow(Hwd, bounds); // bmp - изображение приложения
 
             var bmpFullScreen = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height); // изображение всего экрана
 
             using(var gr = Graphics.FromImage(bmpFullScreen)) 
                 gr.DrawImage(bmp, original.X, original.Y); // перенос скрина приложения на пустое изображение экрана
-
-            Cursor.Clip = new Rectangle(bounds.Left,bounds.Top,bounds.Width,bounds.Height); // ограничение для перемещения курсора
-
             return bmpFullScreen;
         }
         protected virtual void OnMouseEnter(object sender, EventArgs e)
@@ -74,7 +86,14 @@ namespace kursach
         {
             if (SelectedRectangle.Width > 0 && SelectedRectangle.Height > 0)
             {
-                FrameTimer.SelectedRectangle = SelectedRectangle;
+                if (isOnOtherDesktop)
+                {
+                    FrameTimer.SelectedRectangle = new Rectangle(SelectedRectangle.X + realCorner.X, SelectedRectangle.Y + realCorner.Y, SelectedRectangle.Width, SelectedRectangle.Height);
+                }
+                else
+                {
+                    FrameTimer.SelectedRectangle = SelectedRectangle;
+                }
                 SelectedRectangle.Size = Size.Empty;
                 Invalidate();
             }

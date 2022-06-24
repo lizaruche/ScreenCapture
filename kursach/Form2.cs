@@ -22,6 +22,7 @@ namespace kursach
         {
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             InitializeComponent();
+            
             Animator.Start();
         }
 
@@ -32,6 +33,7 @@ namespace kursach
             timer.Tick += new EventHandler(timer_Tick);
             timer.Start();
         }
+
         private void timer_Tick(object sender, EventArgs e)
         {
             SwitchStopStartButton();
@@ -54,9 +56,9 @@ namespace kursach
 
         private void customButton2_Click_1(object sender, EventArgs e) // Включить стрим
         {
-            Form choose_app = new Form3();
-
-            choose_app.Show();
+            form3.RefreshGrid();
+            form3.Show();
+            Stream.Address = textBox1.Text;
         }
 
         private void customButton1_Click_1(object sender, EventArgs e) // Остановить стрим
@@ -92,6 +94,25 @@ namespace kursach
             {
                 CaptureFullScreen = false;
             }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (textBox1.Text == "")
+            {
+                customButton2.Enabled = false;
+                customButton2.NewBackColor = Color.Gray;
+            }
+            else
+            {
+                customButton2.Enabled = true;
+                customButton2.NewBackColor = Color.FromArgb(240, 147, 43);
+            }
+        }
+
+        private void Form2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            form3.Close();
         }
     }
 }

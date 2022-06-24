@@ -63,8 +63,19 @@ namespace kursach
         public static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern bool GetWindowRect(IntPtr hwnd, out Rect rectangle); // создает Rect-прямоугольник на основе окна 
+        public static extern bool GetWindowRect(IntPtr hwnd, out Rect rectangle); // создает Rect-прямоугольник на основе окна
+        //public static bool GetWindowRectUpdate(IntPtr hwnd, out Rect new_rectangle)
+        //{
+        //    Rect rectangle;
+        //    GetWindowRect(hwnd, out rectangle);
 
+        //    new_rectangle = new Rect();
+        //    new_rectangle.Left = rectangle.Left - 7;
+        //    new_rectangle.Top = rectangle.Top;
+        //    new_rectangle.Width = rectangle.Width + 14;
+        //    new_rectangle.Height = rectangle.Height + 7;
+        //    return true;
+        //}
         [DllImport("USER32.DLL")]
         public static extern bool EnumWindows(EnumWindowsProc enumFunc, int lParam);
 
