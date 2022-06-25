@@ -68,6 +68,18 @@ namespace kursach
                         }
                         Stream.Stop();
                     }
+                    catch (UriFormatException)
+                    {
+                        if (MsgBoxIsDisplayed == false)
+                        {
+                            MsgBoxIsDisplayed = true;
+                            if (MessageBox.Show("Некорректная ссылка на сервер. Трансляция остановлена", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning) == DialogResult.OK)
+                            {
+                                MsgBoxIsDisplayed = false;
+                            }
+                        }
+                        Stream.Stop();
+                    }
                 }
             }
         }

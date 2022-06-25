@@ -44,7 +44,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(330, 27);
             this.textBox1.TabIndex = 13;
-            this.textBox1.Text = "http://127.0.0.1:5000";
+            this.textBox1.Text = "http://127.0.0.1:8080/base64_img";
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label1
@@ -55,9 +55,9 @@
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(30, 83);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(236, 20);
+            this.label1.Size = new System.Drawing.Size(358, 20);
             this.label1.TabIndex = 14;
-            this.label1.Text = "Введите адрес сервера";
+            this.label1.Text = "Введите URL POST запроса сервера";
             // 
             // customToggleSwitch1
             // 
