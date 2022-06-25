@@ -34,6 +34,7 @@
             this.customButton2 = new kursach.CustomButton();
             this.customButton1 = new kursach.CustomButton();
             this.customToggleSwitch1 = new kursach.CustomToggleSwitch();
+            this.form3 = new kursach.Form3();
             this.SuspendLayout();
             // 
             // textBox1
@@ -154,6 +155,7 @@
         }
 
         #endregion
+        private Form3 form3;
         private CustomButton customButton1;
         private CustomButton customButton2;
         private CustomButton customButton3;

@@ -288,6 +288,7 @@ namespace kursach
 
             foreach (var item in allWindows)
             {
+                // Проверка на то было ли закрыто окно во время выбора в окне выбора
                 Process current_process;
                 uint current_process_id;
                 GetWindowThreadProcessId(item.Key, out current_process_id);
@@ -295,6 +296,7 @@ namespace kursach
                 current_process = Process.GetProcessById((int)current_process_id);
                 current_process.Exited += new EventHandler(window_closed);
 
+                // Создание необходимых локальных переменных
                 User32.GetWindowRect(item.Key, out rect);
                 Rectangle bounds = User32.RectToRectangle(rect);
 
