@@ -28,14 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.customToggleSwitch1 = new kursach.CustomToggleSwitch();
             this.customButton3 = new kursach.CustomButton();
             this.customButton2 = new kursach.CustomButton();
             this.customButton1 = new kursach.CustomButton();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.form3 = new kursach.Form3();
             this.SuspendLayout();
+            // 
+            // textBox1
+            // 
+            this.textBox1.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox1.Location = new System.Drawing.Point(33, 109);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(330, 27);
+            this.textBox1.TabIndex = 13;
+            this.textBox1.Text = "http://127.0.0.1:5000";
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Verdana", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(30, 83);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(236, 20);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Введите адрес сервера";
             // 
             // customToggleSwitch1
             // 
@@ -109,28 +131,6 @@
             this.customButton1.Text = "Остановить поток";
             this.customButton1.Visible = false;
             this.customButton1.Click += new System.EventHandler(this.customButton1_Click_1);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox1.Location = new System.Drawing.Point(33, 109);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(330, 27);
-            this.textBox1.TabIndex = 13;
-            this.textBox1.Text = "http://127.0.0.1:5000";
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Verdana", 12.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(30, 83);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(236, 20);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "Введите адрес сервера";
             // 
             // form3
             // 

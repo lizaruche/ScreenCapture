@@ -2,12 +2,14 @@
 using System.IO;
 using System.Net;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace kursach
 {
     public class Stream
     {
         public static string Address { get; set; }
+        private static bool MsgBoxIsDisplayed = false;
         /// <summary>
         /// таймер для отправки кадров на сервер с интервалом 40 мс
         /// </summary>
@@ -36,7 +38,24 @@ namespace kursach
         /// </summary>
         /// <param name="img"> Bitmap для отправки</param>
         public static void SendToServ(Bitmap img)
-        { 
+        {
+            try
+            {
+                Uri ad = new Uri(Address);
+            }
+            catch
+            {
+                if (MsgBoxIsDisplayed == false)
+                {
+                    MsgBoxIsDisplayed = true;
+                    if (MessageBox.Show("Некорректная ссылка на сервер. Трансляция остановлена", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning) == DialogResult.OK)
+                    {
+                        MsgBoxIsDisplayed = false;
+                    }
+                }
+                Stream.Stop();
+                return;
+            }
             WebRequest request = WebRequest.Create($"{Address}/base64_img"); // сохдание объекта запроса
             request.ContentType = "application/json"; // тип контента в запросе
             request.Method = "POST"; // метод запроса
@@ -143,6 +162,14 @@ namespace kursach
                         {
                             if (rc.Width <= Math.Abs(rc.X))
                             {
+                                //if (MsgBoxIsDisplayed == false)
+                                //{
+                                //    MsgBoxIsDisplayed = true;
+                                //    if (MessageBox.Show("Некорректная область выделения. Трансляция остановлена", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning) == DialogResult.OK)
+                                //    {
+                                //        MsgBoxIsDisplayed = false;
+                                //    }
+                                //}
                                 Stream.Stop();
                             }
                             else

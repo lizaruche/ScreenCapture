@@ -116,7 +116,6 @@ namespace kursach
 
             if (pictureIsSelected && current_position != selected_index) // Если картинка уже выбрана, но выбрали другую, то
             {
-                //picture.Parent.Invalidate(new Rectangle(selected_index % 2 * 300 + 10, 20 + 225 * (int)Math.Floor((float)selected_index / 2), 260, 185));
                 picture.BorderColor = Color.FromArgb(255, 0, 0, 255);
                 pictureBoxes[selected_index].BorderColor = Color.Transparent;
                 selected_index = current_position;
