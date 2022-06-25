@@ -202,6 +202,11 @@ namespace kursach
             }
         }
 
+        private void window_closed(object sender, EventArgs e)
+        {
+            RefreshGrid();
+        }
+
         #endregion
 
         #region -- Переменные для работы логики формы --
@@ -212,7 +217,7 @@ namespace kursach
         List<PicExt> pictureBoxes = new List<PicExt>(); // List со всеми pictureBox'ами
         List<String> names = new List<string>(); // List хранит в себе все названия на экране
         List<HWND> handles = new List<HWND>(); // List хранит в себе все хэндлы процессов на экране
-
+        public static IEnumerable<Process> allProcesses;
 
         private int selected_index = -1;
         private string selected_name;
@@ -261,7 +266,7 @@ namespace kursach
         public static void RefreshWindowsList()
         {
             windowsList.Clear();
-            IEnumerable<Process> allProcesses = Process.GetProcesses().Where(proc => proc.MainWindowTitle != "" && proc.MainWindowHandle != IntPtr.Zero);
+            allProcesses = Process.GetProcesses().Where(proc => proc.MainWindowTitle != "" && proc.MainWindowHandle != IntPtr.Zero);
             foreach (var process in allProcesses)
             {
                 var process_windows = GetOpenWindowsFromPID(process.Id);
@@ -283,6 +288,13 @@ namespace kursach
 
             foreach (var item in allWindows)
             {
+                Process current_process;
+                uint current_process_id;
+                GetWindowThreadProcessId(item.Key, out current_process_id);
+
+                current_process = Process.GetProcessById((int)current_process_id);
+                current_process.Exited += new EventHandler(window_closed);
+
                 User32.GetWindowRect(item.Key, out rect);
                 Rectangle bounds = User32.RectToRectangle(rect);
 

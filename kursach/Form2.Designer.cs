@@ -30,11 +30,10 @@
         {
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.customToggleSwitch1 = new kursach.CustomToggleSwitch();
             this.customButton3 = new kursach.CustomButton();
             this.customButton2 = new kursach.CustomButton();
             this.customButton1 = new kursach.CustomButton();
-            this.form3 = new kursach.Form3();
+            this.customToggleSwitch1 = new kursach.CustomToggleSwitch();
             this.SuspendLayout();
             // 
             // textBox1
@@ -58,22 +57,6 @@
             this.label1.Size = new System.Drawing.Size(358, 20);
             this.label1.TabIndex = 14;
             this.label1.Text = "Введите URL POST запроса сервера";
-            // 
-            // customToggleSwitch1
-            // 
-            this.customToggleSwitch1.BackColor = System.Drawing.Color.White;
-            this.customToggleSwitch1.BackColorOFF = System.Drawing.Color.Red;
-            this.customToggleSwitch1.BackColorON = System.Drawing.Color.DarkGreen;
-            this.customToggleSwitch1.Checked = false;
-            this.customToggleSwitch1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.customToggleSwitch1.Font = new System.Drawing.Font("Verdana", 9F);
-            this.customToggleSwitch1.Location = new System.Drawing.Point(225, 352);
-            this.customToggleSwitch1.Name = "customToggleSwitch1";
-            this.customToggleSwitch1.Size = new System.Drawing.Size(176, 15);
-            this.customToggleSwitch1.TabIndex = 12;
-            this.customToggleSwitch1.Text = "Захватить всё окно";
-            this.customToggleSwitch1.TextOnChecked = "";
-            this.customToggleSwitch1.CheckedChanged += new kursach.CustomToggleSwitch.OnCheckedChangedHandler(this.customToggleSwitch1_CheckedChanged);
             // 
             // customButton3
             // 
@@ -132,16 +115,21 @@
             this.customButton1.Visible = false;
             this.customButton1.Click += new System.EventHandler(this.customButton1_Click_1);
             // 
-            // form3
+            // customToggleSwitch1
             // 
-            this.form3.BackColor = System.Drawing.Color.Gray;
-            this.form3.ClientSize = new System.Drawing.Size(634, 529);
-            this.form3.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.form3.Location = new System.Drawing.Point(130, 130);
-            this.form3.Name = "form3";
-            this.form3.Padding = new System.Windows.Forms.Padding(25, 25, 0, 0);
-            this.form3.Text = "Выбор приложения";
-            this.form3.Visible = false;
+            this.customToggleSwitch1.BackColor = System.Drawing.Color.White;
+            this.customToggleSwitch1.BackColorOFF = System.Drawing.Color.Red;
+            this.customToggleSwitch1.BackColorON = System.Drawing.Color.DarkGreen;
+            this.customToggleSwitch1.Checked = false;
+            this.customToggleSwitch1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.customToggleSwitch1.Font = new System.Drawing.Font("Verdana", 9F);
+            this.customToggleSwitch1.Location = new System.Drawing.Point(225, 352);
+            this.customToggleSwitch1.Name = "customToggleSwitch1";
+            this.customToggleSwitch1.Size = new System.Drawing.Size(176, 15);
+            this.customToggleSwitch1.TabIndex = 12;
+            this.customToggleSwitch1.Text = "Захватить всё окно";
+            this.customToggleSwitch1.TextOnChecked = "";
+            this.customToggleSwitch1.CheckedChanged += new kursach.CustomToggleSwitch.OnCheckedChangedHandler(this.customToggleSwitch1_CheckedChanged);
             // 
             // Form2
             // 
@@ -166,7 +154,6 @@
         }
 
         #endregion
-        private Form3 form3;
         private CustomButton customButton1;
         private CustomButton customButton2;
         private CustomButton customButton3;
